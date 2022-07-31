@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A60462C12896C5B3008276E7 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60462C02896C5B3008276E7 /* ImagePicker.swift */; };
 		A641A3C8289679A10016041C /* InsutaguramuSwiftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3C7289679A10016041C /* InsutaguramuSwiftApp.swift */; };
 		A641A3CA289679A10016041C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3C9289679A10016041C /* ContentView.swift */; };
 		A641A3CC289679A30016041C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A641A3CB289679A30016041C /* Assets.xcassets */; };
@@ -22,9 +23,11 @@
 		A641A3E72896819B0016041C /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3E62896819B0016041C /* ProfileView.swift */; };
 		A641A3E92896888A0016041C /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3E82896888A0016041C /* AuthViewModel.swift */; };
 		A641A3EB289689510016041C /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3EA289689510016041C /* Models.swift */; };
+		A6C338BB2896DB50008D37FD /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = A6C338BA2896DB50008D37FD /* SDWebImageSwiftUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A60462C02896C5B3008276E7 /* ImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		A641A3C4289679A10016041C /* InsutaguramuSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InsutaguramuSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A641A3C7289679A10016041C /* InsutaguramuSwiftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsutaguramuSwiftApp.swift; sourceTree = "<group>"; };
 		A641A3C9289679A10016041C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -44,6 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6C338BB2896DB50008D37FD /* SDWebImageSwiftUI in Frameworks */,
 				A641A3DB28967A430016041C /* FirebaseFirestoreSwift-Beta in Frameworks */,
 				A641A3DD28967A430016041C /* FirebaseStorage in Frameworks */,
 				A641A3D728967A430016041C /* FirebaseAuth in Frameworks */,
@@ -76,6 +80,7 @@
 				A641A3DE28967ABF0016041C /* GoogleService-Info.plist */,
 				A641A3C7289679A10016041C /* InsutaguramuSwiftApp.swift */,
 				A641A3C9289679A10016041C /* ContentView.swift */,
+				A60462C02896C5B3008276E7 /* ImagePicker.swift */,
 				A641A3E0289681510016041C /* LoginView.swift */,
 				A641A3E82896888A0016041C /* AuthViewModel.swift */,
 				A641A3E2289681640016041C /* MainTabView.swift */,
@@ -117,6 +122,7 @@
 				A641A3D828967A430016041C /* FirebaseFirestore */,
 				A641A3DA28967A430016041C /* FirebaseFirestoreSwift-Beta */,
 				A641A3DC28967A430016041C /* FirebaseStorage */,
+				A6C338BA2896DB50008D37FD /* SDWebImageSwiftUI */,
 			);
 			productName = InsutaguramuSwift;
 			productReference = A641A3C4289679A10016041C /* InsutaguramuSwift.app */;
@@ -148,6 +154,7 @@
 			mainGroup = A641A3BB289679A00016041C;
 			packageReferences = (
 				A641A3D528967A430016041C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				A6C338B92896DB50008D37FD /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 			);
 			productRefGroup = A641A3C5289679A10016041C /* Products */;
 			projectDirPath = "";
@@ -179,6 +186,7 @@
 				A641A3E1289681510016041C /* LoginView.swift in Sources */,
 				A641A3CA289679A10016041C /* ContentView.swift in Sources */,
 				A641A3C8289679A10016041C /* InsutaguramuSwiftApp.swift in Sources */,
+				A60462C12896C5B3008276E7 /* ImagePicker.swift in Sources */,
 				A641A3EB289689510016041C /* Models.swift in Sources */,
 				A641A3E92896888A0016041C /* AuthViewModel.swift in Sources */,
 				A641A3E52896817D0016041C /* PostsView.swift in Sources */,
@@ -393,6 +401,14 @@
 				minimumVersion = 8.0.0;
 			};
 		};
+		A6C338B92896DB50008D37FD /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -415,6 +431,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A641A3D528967A430016041C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		A6C338BA2896DB50008D37FD /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A6C338B92896DB50008D37FD /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

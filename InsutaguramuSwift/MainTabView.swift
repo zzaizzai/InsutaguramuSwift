@@ -15,6 +15,7 @@ struct MainTabView: View {
         NavigationView{
             TabView(){
                 PostsView()
+//                    .environmentObject(AuthViewModel())
                     .tabItem {
                         Image(systemName: "house")
                     }
@@ -33,6 +34,7 @@ struct MainTabView: View {
                     .tag("hello")
                 
                 ProfileView()
+//                    .environmentObject(AuthViewModel())
                     .tabItem {
                         Image(systemName: "person")
                     }
@@ -44,8 +46,8 @@ struct MainTabView: View {
     }
 }
 
-struct MainTabView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainTabView()
-    }
-}
+//struct MainTabView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        MainTabView()
+//    }
+//}

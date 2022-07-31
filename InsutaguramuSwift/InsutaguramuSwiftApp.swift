@@ -11,14 +11,15 @@ import Firebase
 @main
 struct InsutaguramuSwiftApp: App {
     
+    @StateObject var vm = AuthViewModel()
+    
     init() {
         FirebaseApp.configure()
     }
     var body: some Scene {
         WindowGroup {
-//            ContentView()
-            LoginView()
-                .environmentObject(AuthViewModel())
+            ContentView()
+                .environmentObject(vm)
         }
     }
 }
