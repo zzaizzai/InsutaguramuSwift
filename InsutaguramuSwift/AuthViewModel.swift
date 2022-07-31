@@ -15,6 +15,7 @@ class AuthViewModel: ObservableObject {
     @Published var userSession: FirebaseAuth.User?
     @Published var currentUser: User?
     @Published var didRegistration = false
+    private var tempUserSession : FirebaseAuth.User?
     
     @Published var errorMessage = "error message desu"
     
@@ -40,6 +41,62 @@ class AuthViewModel: ObservableObject {
             
             
         }
+    }
+    
+    func storeProfileImage(profileImage: UIImage) {
+        
+        self.errorMessage = "storing profile image"
+        
+        guard let myUid = tempUserSession?.uid else {
+            self.errorMessage = "no user"
+            return }
+        
+        let ref = Storage.storage().reference(withPath: myUid)
+        
+        guard let imageData = profileImage.jpegData(compressionQuality: 0.5) else {
+            self.errorMessage = "no profile image i dont know"
+            return }
+        self.errorMessage = "putdata"
+        ref.putData(imageData, metadata: nil) { metadata, error in
+            if let error = error {
+                print(error)
+                self.errorMessage = "\(error)"
+                return
+            }
+            self.errorMessage = "download url"
+            ref.downloadURL { url, error in
+                if let error = error {
+                    print(error)
+                    self.errorMessage = "\(error)"
+                    return
+                }
+//
+                self.errorMessage = "download url done \(url?.absoluteString ?? "no url")"
+                
+                guard let profileImageUrl = url?.absoluteString else {
+                    self.errorMessage = "url error"
+                    return }
+//
+//                self.errorMessage = profileImageUrl.description
+//
+                self.errorMessage = profileImageUrl
+                
+                Firestore.firestore().collection("users").document(myUid).updateData(["profileImageUrl": profileImageUrl ]) { error in
+                    if let error = error {
+                        print(error)
+                        self.errorMessage = "\(error)"
+                        return
+                    }
+                    self.errorMessage = "stored profile image"
+//
+                }
+            }
+        }
+        
+//        self.didRegistration = true
+//        self.errorMessage = "registration done"
+            
+        
     }
     
     func fetchUserData() {
@@ -70,25 +127,31 @@ class AuthViewModel: ObservableObject {
     }
     
     func logOut() {
-        userSession = nil
+
         try? Auth.auth().signOut()
+        self.userSession = nil
+        self.currentUser = nil
         self.errorMessage = "logout done"
     }
     
-    func register(email: String, password: String, name: String) {
+    func register(email: String, password: String, name: String, profileImage: UIImage) {
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
             if let error = error {
                 print(error)
+                self.errorMessage = "\(error)"
                 return
             }
             
             guard let user = result?.user else { return }
+            self.tempUserSession = user
             
             let newUserData = [
                 "email": email,
                 "name":name,
                 "uid": user.uid,
-                "joinDate": Date()
+                "joinDate": Date(),
+                "profileImageUrl" : "",
+                "profileText" : "",
             ] as [String: Any]
             
             Firestore.firestore().collection("users").document(user.uid).setData(newUserData){ error in
@@ -97,9 +160,10 @@ class AuthViewModel: ObservableObject {
                     return
                 }
                 
-                self.didRegistration = true
-                self.errorMessage = "registration done"
+
             }
+            
+            self.storeProfileImage(profileImage: profileImage)
             
             
         }

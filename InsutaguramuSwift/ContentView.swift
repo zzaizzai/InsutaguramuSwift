@@ -8,12 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @EnvironmentObject var vm : AuthViewModel
+    
     var body: some View {
         VStack{
-            Text("Hello, world!")
-                .padding()
-            
-            Text("hello")
+            if vm.userSession == nil {
+                LoginView()
+            } else {
+                MainTabView()
+            }
         }
     }
 }
@@ -21,5 +25,6 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(AuthViewModel())
     }
 }
