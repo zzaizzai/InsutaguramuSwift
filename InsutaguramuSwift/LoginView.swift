@@ -9,14 +9,14 @@ import SwiftUI
 
 struct LoginView: View {
     
-    @EnvironmentObject var vm : AuthViewModel
+    @EnvironmentObject var vmAuth : AuthViewModel
     
     @State private var name = ""
     @State private var email = "test@test.com"
     @State private var password = "password"
     @State private var errorMessage = ""
     @State private var successMessage = ""
-    @State private var showRegisterMode = true
+    @State private var showRegisterMode = false
     @State private var showImagePicker = false
     @State private var profileImage : UIImage?
     
@@ -50,7 +50,7 @@ struct LoginView: View {
             
             
             Button {
-                vm.login(email: self.email, password: self.password)
+                vmAuth.login(email: self.email, password: self.password)
             } label: {
                 Spacer()
                 Text("login")
@@ -63,7 +63,7 @@ struct LoginView: View {
             
             
             Button {
-                vm.logOut()
+                vmAuth.logOut()
             } label: {
                 Spacer()
                 Text("log out")
@@ -75,9 +75,9 @@ struct LoginView: View {
             .padding()
             
             
-            Text(vm.errorMessage)
+            Text(vmAuth.errorMessage)
             
-            Text("\(vm.currentUser?.uid ?? "no uid")")
+            Text("\(vmAuth.currentUser?.uid ?? "no uid")")
             
             
             Button {
@@ -135,7 +135,7 @@ struct LoginView: View {
             .padding()
             
             ZStack{
-                Text(vm.errorMessage)
+                Text(vmAuth.errorMessage)
                 Text(self.errorMessage)
             }
             
@@ -158,7 +158,7 @@ struct LoginView: View {
             return }
         
         self.errorMessage = ""
-        vm.register(email: self.email, password: self.password, name: "james", profileImage: newProfileImage)
+        vmAuth.register(email: self.email, password: self.password, name: "james", profileImage: newProfileImage)
     }
 }
 

@@ -9,27 +9,46 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct ProfileView: View {
-    @EnvironmentObject var vm : AuthViewModel
+    @EnvironmentObject var vmAuth : AuthViewModel
     
     var body: some View {
-        VStack{
-            WebImage(url: URL(string: vm.currentUser?.profileImageUrl ?? "no url"))
-                .frame(width: 65, height: 65)
-            
-            Text(vm.currentUser?.email ?? "no email")
-            Text(vm.currentUser?.name ?? "no name" )
-            Text(vm.currentUser?.uid ?? "no uid" )
-            Button {
-                vm.logOut()
-            } label: {
-                Text("log out")
-                    .foregroundColor(Color.white)
-                    .padding()
-            }
-            .background(Capsule().fill(Color.red))
-            .padding()
+//        ScrollView{
+            VStack{
+                
+                ZStack{
+                    WebImage(url: URL(string: vmAuth.currentUser?.profileImageUrl ?? "no url"))
+                        .resizable()
+                        .frame(width: 120, height: 120)
+                        .scaledToFill()
+                        .cornerRadius(100)
+                        .zIndex(1)
+                    
+                    Image(systemName: "person")
+                        .font(.system(size: 110))
+                        .background(Color.gray)
+//                        .frame(width: 120, height: 120)
+//                        .scaledToFill()
+                        .cornerRadius(100)
+                        
+                }
+                
+                Text(vmAuth.currentUser?.email ?? "no email")
+                Text(vmAuth.currentUser?.name ?? "no name" )
+                Text(vmAuth.currentUser?.uid ?? "no uid" )
+                Button {
+                    vmAuth.logOut()
+                } label: {
+                    Text("log out")
+                        .foregroundColor(Color.white)
+                        .padding()
+                }
+                .background(Capsule().fill(Color.red))
+                .padding()
+                
+                Text("my posts")
 
-        }
+            }
+//        }
     }
 }
 

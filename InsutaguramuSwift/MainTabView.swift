@@ -21,7 +21,7 @@ struct MainTabView: View {
                     }
                     .tag("hello")
                 
-                Text("pencil")
+                UploadPost()
                     .tabItem {
                         Image(systemName: "pencil")
                     }
