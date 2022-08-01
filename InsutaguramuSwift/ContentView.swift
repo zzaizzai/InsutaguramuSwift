@@ -9,11 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @EnvironmentObject var vm : AuthViewModel
+    @EnvironmentObject var vmAuth : AuthViewModel
     
     var body: some View {
         VStack{
-            if vm.userSession == nil {
+            if vmAuth.userSession == nil {
                 LoginView()
             } else {
                 MainTabView()

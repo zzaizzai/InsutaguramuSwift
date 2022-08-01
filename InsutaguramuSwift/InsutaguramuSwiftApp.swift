@@ -11,7 +11,7 @@ import Firebase
 @main
 struct InsutaguramuSwiftApp: App {
     
-    @StateObject var vm = AuthViewModel()
+    @StateObject var vmAuth = AuthViewModel()
     
     init() {
         FirebaseApp.configure()
@@ -19,7 +19,7 @@ struct InsutaguramuSwiftApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(vm)
+                .environmentObject(vmAuth)
         }
     }
 }
