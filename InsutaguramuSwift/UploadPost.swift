@@ -13,12 +13,27 @@ struct Post: Identifiable {
     var id : String { documentId }
     
     let documentId: String
-    let authorUid, text : String
+    let authorUid, postText : String
     let authorName, authorEmail, authorProfileUrl : String
+    let postImageUrl: String
     let time: Date
     var likes: Int
     
     var didLike: Bool? = false
+    
+    init(documentId: String, data: [String:Any] ) {
+        self.documentId = documentId
+        self.authorUid = data["authorUid"] as? String ?? "no authorUid"
+        self.authorEmail = data["authorEmail"] as? String ?? "no authorEmail"
+        self.authorName = data["authorName"] as? String ?? "no authorName"
+        self.authorProfileUrl = data["authorProfileUrl"] as? String ?? "no authorProfileUrl"
+        self.postText = data["postText"] as? String ?? "no postText"
+        self.postImageUrl = data["postImageUrl"] as? String ?? "no postImageUrl"
+        
+        self.time = data["time"] as? Date ?? Date()
+        self.likes = data["likes"] as? Int ?? 0
+//        self.didLike = false
+    }
 }
 
 class UploadPostViewModel: ObservableObject {
@@ -37,7 +52,8 @@ class UploadPostViewModel: ObservableObject {
             "authorEmail" : currentUser.email,
             "authorName" : currentUser.name,
             "authorProfileUrl" : currentUser.profileImageUrl,
-            "text" : uploadText,
+            "postText" : uploadText,
+            "postImageUrl": "",
             "likes" : 0,
             "time" : Date(),
             "didLike": false,
@@ -116,6 +132,7 @@ struct UploadPost: View {
                 }
             }
         }
+
     }
 }
 

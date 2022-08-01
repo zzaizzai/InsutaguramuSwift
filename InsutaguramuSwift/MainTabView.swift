@@ -13,8 +13,8 @@ struct MainTabView: View {
     
     var body: some View {
         NavigationView{
-            TabView(){
-                PostsView()
+            TabView(selection: $titleName){
+                MainPostsView()
 //                    .environmentObject(AuthViewModel())
                     .tabItem {
                         Image(systemName: "house")
@@ -25,23 +25,24 @@ struct MainTabView: View {
                     .tabItem {
                         Image(systemName: "pencil")
                     }
-                    .tag("hello")
+                    .tag("upload")
                 
                 Text("message")
                     .tabItem {
                         Image(systemName: "message")
                     }
-                    .tag("hello")
+                    .tag("33")
                 
                 ProfileView()
 //                    .environmentObject(AuthViewModel())
                     .tabItem {
                         Image(systemName: "person")
                     }
-                    .tag("profile")
+                    .tag("44")
             }
+            .navigationTitle(self.titleName)
+            .navigationBarTitleDisplayMode(.inline)
         }
-
 
     }
 }
