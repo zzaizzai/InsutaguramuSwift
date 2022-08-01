@@ -19,7 +19,7 @@
 		A641A3DF28967AC00016041C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A641A3DE28967ABF0016041C /* GoogleService-Info.plist */; };
 		A641A3E1289681510016041C /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3E0289681510016041C /* LoginView.swift */; };
 		A641A3E3289681640016041C /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3E2289681640016041C /* MainTabView.swift */; };
-		A641A3E52896817D0016041C /* PostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3E42896817D0016041C /* PostsView.swift */; };
+		A641A3E52896817D0016041C /* MainPostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3E42896817D0016041C /* MainPostsView.swift */; };
 		A641A3E72896819B0016041C /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3E62896819B0016041C /* ProfileView.swift */; };
 		A641A3E92896888A0016041C /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3E82896888A0016041C /* AuthViewModel.swift */; };
 		A641A3EB289689510016041C /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3EA289689510016041C /* Models.swift */; };
@@ -37,7 +37,7 @@
 		A641A3DE28967ABF0016041C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A641A3E0289681510016041C /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		A641A3E2289681640016041C /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
-		A641A3E42896817D0016041C /* PostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsView.swift; sourceTree = "<group>"; };
+		A641A3E42896817D0016041C /* MainPostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPostsView.swift; sourceTree = "<group>"; };
 		A641A3E62896819B0016041C /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		A641A3E82896888A0016041C /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		A641A3EA289689510016041C /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
@@ -88,7 +88,7 @@
 				A641A3E82896888A0016041C /* AuthViewModel.swift */,
 				A641A3E2289681640016041C /* MainTabView.swift */,
 				A641A3EA289689510016041C /* Models.swift */,
-				A641A3E42896817D0016041C /* PostsView.swift */,
+				A641A3E42896817D0016041C /* MainPostsView.swift */,
 				A641A3E62896819B0016041C /* ProfileView.swift */,
 				A641A3CB289679A30016041C /* Assets.xcassets */,
 				A641A3CD289679A30016041C /* Preview Content */,
@@ -193,7 +193,7 @@
 				A60462C12896C5B3008276E7 /* ImagePicker.swift in Sources */,
 				A641A3EB289689510016041C /* Models.swift in Sources */,
 				A641A3E92896888A0016041C /* AuthViewModel.swift in Sources */,
-				A641A3E52896817D0016041C /* PostsView.swift in Sources */,
+				A641A3E52896817D0016041C /* MainPostsView.swift in Sources */,
 				A641A3E72896819B0016041C /* ProfileView.swift in Sources */,
 				A641A3E3289681640016041C /* MainTabView.swift in Sources */,
 			);
