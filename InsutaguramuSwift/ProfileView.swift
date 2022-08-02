@@ -12,43 +12,47 @@ struct ProfileView: View {
     @EnvironmentObject var vmAuth : AuthViewModel
     
     var body: some View {
-//        ScrollView{
-            VStack{
-                
-                ZStack{
-                    WebImage(url: URL(string: vmAuth.currentUser?.profileImageUrl ?? "no url"))
-                        .resizable()
-                        .frame(width: 120, height: 120)
-                        .scaledToFill()
-                        .cornerRadius(100)
-                        .zIndex(1)
+        NavigationView {
+            ScrollView {
+                VStack{
                     
-                    Image(systemName: "person")
-                        .font(.system(size: 110))
-                        .background(Color.gray)
-//                        .frame(width: 120, height: 120)
-//                        .scaledToFill()
-                        .cornerRadius(100)
+                    ZStack{
+                        WebImage(url: URL(string: vmAuth.currentUser?.profileImageUrl ?? "no url"))
+                            .resizable()
+                            .frame(width: 120, height: 120)
+                            .scaledToFill()
+                            .cornerRadius(100)
+                            .zIndex(1)
                         
-                }
-                
-                Text(vmAuth.currentUser?.email ?? "no email")
-                Text(vmAuth.currentUser?.name ?? "no name" )
-                Text(vmAuth.currentUser?.uid ?? "no uid" )
-                Button {
-                    vmAuth.logOut()
-                } label: {
-                    Text("log out")
-                        .foregroundColor(Color.white)
-                        .padding()
-                }
-                .background(Capsule().fill(Color.red))
-                .padding()
-                
-                Text("my posts")
+                        Image(systemName: "person")
+                            .font(.system(size: 110))
+                            .background(Color.gray)
+    //                        .frame(width: 120, height: 120)
+    //                        .scaledToFill()
+                            .cornerRadius(100)
+                            
+                    }
+                    
+                    Text(vmAuth.currentUser?.email ?? "no email")
+                    Text(vmAuth.currentUser?.name ?? "no name" )
+                    Text(vmAuth.currentUser?.uid ?? "no uid" )
+                    Button {
+                        vmAuth.logOut()
+                    } label: {
+                        Text("log out")
+                            .foregroundColor(Color.white)
+                            .padding()
+                    }
+                    .background(Capsule().fill(Color.red))
+                    .padding()
+                    
+                    Text("my posts")
 
+                }
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationTitle("profile")
             }
-//        }
+        }
     }
 }
 
