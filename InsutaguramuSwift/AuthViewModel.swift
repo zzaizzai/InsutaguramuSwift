@@ -43,7 +43,7 @@ class AuthViewModel: ObservableObject {
         }
     }
     
-    func storeProfileImage(profileImage: UIImage) {
+    func storeProfileImage(profileImage: UIImage, completion: @escaping(Bool)-> Void) {
         
         self.errorMessage = "storing profile image"
         
@@ -51,7 +51,7 @@ class AuthViewModel: ObservableObject {
             self.errorMessage = "no user"
             return }
         
-        let ref = Storage.storage().reference(withPath: myUid)
+        let ref = Storage.storage().reference(withPath: "profile/" + myUid)
         
         guard let imageData = profileImage.jpegData(compressionQuality: 0.5) else {
             self.errorMessage = "no profile image i dont know"
@@ -88,13 +88,14 @@ class AuthViewModel: ObservableObject {
                         return
                     }
                     self.errorMessage = "stored profile image"
+                    
+                    completion(true)
 //
                 }
             }
         }
         
-//        self.didRegistration = true
-//        self.errorMessage = "registration done"
+        
             
         
     }
@@ -134,7 +135,7 @@ class AuthViewModel: ObservableObject {
         self.errorMessage = "logout done"
     }
     
-    func register(email: String, password: String, name: String, profileImage: UIImage) {
+    func register(email: String, password: String, name: String, profileImage: UIImage, completion: @escaping(Bool) -> Void) {
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
             if let error = error {
                 print(error)
@@ -163,7 +164,16 @@ class AuthViewModel: ObservableObject {
 
             }
             
-            self.storeProfileImage(profileImage: profileImage)
+            self.storeProfileImage(profileImage: profileImage) { didStoredImage in
+                if didStoredImage == true {
+                    self.errorMessage = "success to register"
+                    
+                    sleep(2)
+                    
+                    self.errorMessage = ""
+                    completion(true)
+                }
+            }
             
             
         }
