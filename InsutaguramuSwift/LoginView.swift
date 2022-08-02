@@ -158,7 +158,14 @@ struct LoginView: View {
             return }
         
         self.errorMessage = ""
-        vmAuth.register(email: self.email, password: self.password, name: "james", profileImage: newProfileImage)
+        vmAuth.register(email: self.email, password: self.password, name: self.name, profileImage: newProfileImage){ didRegist in
+            if didRegist == true {
+                
+                sleep(1)
+                
+                self.showRegisterMode = false
+            }
+        }
     }
 }
 
