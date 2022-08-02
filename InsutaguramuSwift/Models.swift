@@ -7,9 +7,10 @@
 
 import Foundation
 import FirebaseFirestoreSwift
+import Firebase
 
 
-struct User: Identifiable {
+struct User: Identifiable, Codable {
     
     var id: String {documentId}
     
@@ -28,4 +29,32 @@ struct User: Identifiable {
     }
     
     
+}
+
+
+struct Post: Identifiable, Codable {
+    
+    var id : String { documentId }
+    
+    let documentId: String
+    let authorUid, postText : String
+    let authorName, authorEmail, authorProfileUrl : String
+    let postImageUrl: String
+    let time: Timestamp
+    var likes: Int
+    
+    var didLike: Bool? = false
+    
+    init(documentId: String, data: [String:Any] ) {
+        self.documentId = documentId
+        self.authorUid = data["authorUid"] as? String ?? "no authorUid"
+        self.authorEmail = data["authorEmail"] as? String ?? "no authorEmail"
+        self.authorName = data["authorName"] as? String ?? "no authorName"
+        self.authorProfileUrl = data["authorProfileUrl"] as? String ?? "no authorProfileUrl"
+        self.postText = data["postText"] as? String ?? "no postText"
+        self.postImageUrl = data["postImageUrl"] as? String ?? "no postImageUrl"
+        
+        self.time = data["time"] as? Timestamp ?? Timestamp()
+        self.likes = data["likes"] as? Int ?? 0
+    }
 }

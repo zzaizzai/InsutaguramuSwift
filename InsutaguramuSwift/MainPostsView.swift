@@ -7,24 +7,66 @@
 
 import SwiftUI
 import SDWebImageSwiftUI
+import Firebase
 
 class MainPostsViewModel: ObservableObject {
     @Published var posts = [Post]()
     
+    init() {
+        fetchPosts()
+    }
+    
+    func fetchPosts() {
+        
+        Firestore.firestore().collection("posts").order(by: "time").getDocuments { snapshots, error in
+            if let error = error {
+                print(error)
+                return
+            }
+            
+            snapshots?.documents.forEach({ item in
+                
+                let docId = item.documentID
+                let data = item.data()
+                
+                self.posts.insert(.init(documentId: docId, data: data), at: 0)
+            })
+        }
+        
+    }
+    
 }
 
 struct MainPostsView: View {
+    @ObservedObject var vm = MainPostsViewModel()
+    
+    
     var body: some View {
-        ScrollView {
-            VStack{
-                ForEach(0..<3){ item in
-                    PostView()
+        NavigationView{
+            ScrollView {
+                VStack{
+                    ForEach(vm.posts){ post in
+                        PostView(nonCheckedPost: post)
+                        
+                        
+                    }
                     
                 }
-                
             }
+            .navigationTitle("main post")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(trailing:
+                                    VStack{
+//                Button {
+//                    print("hello")
+//                } label: {
+//                    Text("helli")
+//                        .foregroundColor(Color.black)
+//                }
+                
+            })
         }
-
+        
     }
     
     
@@ -41,31 +83,70 @@ struct MainPostsView: View {
     }
 }
 
+class PostViewModel: ObservableObject {
+    
+    @Published var post: Post
+    
+    init(nonCheckedPost: Post){
+        self.post = nonCheckedPost
+        
+    }
+}
+
 struct PostView: View {
+    @ObservedObject var vm: PostViewModel
+    
+    init(nonCheckedPost: Post){
+        self.vm = PostViewModel(nonCheckedPost: nonCheckedPost)
+    }
+    
+    
     var body: some View {
         LazyVStack{
             HStack{
-                Image(systemName: "person")
-                    .resizable()
-                    .background(Color.gray)
-                    .frame(width: 30, height: 30)
-                    .cornerRadius(100)
                 
-                Text("name")
-                    .fontWeight(.bold)
+                Button {
+                    print("show profile")
+                } label: {
+                    
+                    ZStack{
+                        WebImage(url: URL(string: vm.post.authorProfileUrl))
+                            .resizable()
+                            .background(Color.gray)
+                            .frame(width: 35, height: 35)
+                            .cornerRadius(100)
+                            .zIndex(1)
+                        
+                        
+                    }
+                    
+                    Text(vm.post.authorName)
+                        .fontWeight(.bold)
+                        .foregroundColor(Color.black)
+                    
+                    Spacer()
+                }
                 
-                Spacer()
                 
                 Image(systemName: "equal")
                 
-               
+                
             }
             .padding(.horizontal)
             
-            WebImage(url: URL(string: "https://cdn.pixabay.com/photo/2017/01/18/16/46/hong-kong-1990268_1280.jpg"))
-                .resizable()
-                .frame(width: 400, height: 400)
-                .scaledToFill()
+            
+            
+            if vm.post.postImageUrl.count < 10 {
+                WebImage(url: URL(string: "https://cdn.pixabay.com/photo/2016/11/23/00/44/arches-1851520_1280.jpg"))
+                    .resizable()
+                    .frame(width: 400, height: 400)
+                    .scaledToFill()
+            } else {
+                WebImage(url: URL(string: vm.post.postImageUrl))
+                    .resizable()
+                    .frame(width: 400, height: 400)
+                    .scaledToFill()
+            }
             
             HStack{
                 Button {
@@ -74,7 +155,7 @@ struct PostView: View {
                     Image(systemName: "heart")
                         .foregroundColor(Color.black)
                 }
-
+                
                 Image(systemName: "message")
                 Image(systemName: "paperplane")
                 
@@ -85,23 +166,34 @@ struct PostView: View {
             .padding(.horizontal)
             .padding(.vertical, 10)
             
-
+            
             HStack(alignment: .bottom){
-                Text("i love this city. as you can see, it is very important thing that seeing the building s lighting ver beuatifully ")
+                Text(vm.post.postText)
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
                     .lineLimit(2)
                 
-                Button {
-                    print("show more")
-                } label: {
-                    Text("more...")
-                        .foregroundColor(Color.gray)
+                if vm.post.postText.count > 30 {
+                    Button {
+                        print("show more")
+                    } label: {
+                        Text("more...")
+                            .foregroundColor(Color.gray)
+                    }
                 }
-
+                
             }
-        
+            
+            HStack{
+                Text(vm.post.time.dateValue(), style: .time)
+                Text(vm.post.time.dateValue(), style: .date)
+               
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal)
+            .foregroundColor(Color.gray)
+            
             
             
             
@@ -110,12 +202,12 @@ struct PostView: View {
         }
     }
     
-
+    
     
 }
 
 struct PostsView_Previews: PreviewProvider {
     static var previews: some View {
-            MainPostsView()
+        MainPostsView()
     }
 }

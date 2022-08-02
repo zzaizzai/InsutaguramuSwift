@@ -12,7 +12,7 @@ struct MainTabView: View {
     @State private var titleName = "main"
     
     var body: some View {
-        NavigationView{
+//        NavigationView{
             TabView(selection: $titleName){
                 MainPostsView()
 //                    .environmentObject(AuthViewModel())
@@ -40,9 +40,9 @@ struct MainTabView: View {
                     }
                     .tag("44")
             }
-            .navigationTitle(self.titleName)
-            .navigationBarTitleDisplayMode(.inline)
-        }
+//            .navigationTitle(self.titleName)
+//            .navigationBarTitleDisplayMode(.inline)
+//        }
 
     }
 }
