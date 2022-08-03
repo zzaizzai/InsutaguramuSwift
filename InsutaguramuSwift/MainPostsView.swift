@@ -88,17 +88,92 @@ class PostViewModel: ObservableObject {
     
     @Published var post: Post
     
+    
+    //nothing check
     init(nonCheckedPost: Post){
         self.post = nonCheckedPost
         
+        self.checkLikedOrNot(post: self.post) { didLiked in
+            if didLiked == true {
+                self.post.didLike = true
+            }
+        }
     }
     
-    func likeThisPost() {
-        self.post.didLike = true
+    func likeThisPost(post: Post) {
+        
+        guard let myUid = Auth.auth().currentUser?.uid else { return }
+        let postId = post.documentId
+        
+        Firestore.firestore().collection("posts").document(postId).updateData(["likes": post.likes + 1 ]) { error  in
+            if let error = error {
+                print(error)
+                return
+            }
+            
+            let data = [
+                "postUid": postId,
+                "time": Date()
+            
+            ] as [String:Any]
+            
+            Firestore.firestore().collection("likes").document(myUid).collection("likes-posts").document(postId).setData(data) { error2 in
+                if let error2 = error2 {
+                    print(error2)
+                    return
+                    
+                }
+                self.post.didLike = true
+                self.post.likes += 1
+            }
+            
+            
+        }
+        
     }
     
-    func unlikeThisPost() {
-        self.post.didLike = false
+    func unlikeThisPost(post: Post) {
+        guard let myUid = Auth.auth().currentUser?.uid else { return }
+        let postId = post.documentId
+        guard post.likes > 0 else {
+            print("post likes wrong")
+            return }
+        
+        Firestore.firestore().collection("posts").document(postId).updateData(["likes": post.likes - 1 ]) { error in
+            if let error = error {
+                print(error)
+                return
+            }
+            
+            Firestore.firestore().collection("likes").document(myUid).collection("likes-posts").document(postId).delete() { _ in
+                
+                
+                self.post.didLike = false
+                self.post.likes += -1
+                
+            }
+            
+            
+                
+        }
+        
+       
+    }
+    
+    //check whether you liked or not
+    func checkLikedOrNot( post: Post, completion: @escaping(Bool)-> Void) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let postId = post.documentId
+        
+        Firestore.firestore().collection("likes").document(uid).collection("likes-posts").document(postId).getDocument { snapshot, error in
+            if let error = error {
+                print(error)
+                return
+            }
+            guard let snapshot = snapshot else { return }
+            
+            completion(snapshot.exists)
+        }
     }
 }
 
@@ -149,7 +224,7 @@ struct PostView: View {
                     .onTapGesture(count: 2) {
                         //click image and like button
                         if vm.post.didLike == false {
-                            vm.likeThisPost()
+                            vm.likeThisPost(post: vm.post)
                         }
                     }
             } else {
@@ -159,7 +234,7 @@ struct PostView: View {
                     .scaledToFill()
                     .onTapGesture(count: 2) {
                         if vm.post.didLike == false {
-                            vm.likeThisPost()
+                            vm.likeThisPost(post: vm.post)
                         }
                     }
             }
@@ -168,7 +243,7 @@ struct PostView: View {
                 //already liked
                 if vm.post.didLike == true {
                     Button {
-                        vm.unlikeThisPost()
+                        vm.unlikeThisPost(post: vm.post)
                     } label: {
                         Image(systemName: "heart.fill")
                             .foregroundColor(Color.red)
@@ -177,13 +252,13 @@ struct PostView: View {
                     //liked not yet
                 } else {
                     Button {
-                        vm.likeThisPost()
+                        vm.likeThisPost(post: vm.post)
                     } label: {
                         Image(systemName: "heart")
                             .foregroundColor(Color.black)
                     }
                 }
-                
+                Text(vm.post.likes.description)
                 Image(systemName: "message")
                 Image(systemName: "paperplane")
                 
