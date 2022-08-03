@@ -18,6 +18,8 @@ class MainPostsViewModel: ObservableObject {
     
     func fetchPosts() {
         
+        posts.removeAll()
+        
         Firestore.firestore().collection("posts").order(by: "time").getDocuments { snapshots, error in
             if let error = error {
                 print(error)
@@ -40,7 +42,6 @@ class MainPostsViewModel: ObservableObject {
 struct MainPostsView: View {
     @ObservedObject var vm = MainPostsViewModel()
     
-    
     var body: some View {
         NavigationView{
             ScrollView {
@@ -57,12 +58,12 @@ struct MainPostsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(trailing:
                                     VStack{
-//                Button {
-//                    print("hello")
-//                } label: {
-//                    Text("helli")
-//                        .foregroundColor(Color.black)
-//                }
+                Button {
+                    vm.fetchPosts()
+                } label: {
+                    Text("fetchPosts")
+                        .foregroundColor(Color.black)
+                }
                 
             })
         }
@@ -91,15 +92,23 @@ class PostViewModel: ObservableObject {
         self.post = nonCheckedPost
         
     }
+    
+    func likeThisPost() {
+        self.post.didLike = true
+    }
+    
+    func unlikeThisPost() {
+        self.post.didLike = false
+    }
 }
 
 struct PostView: View {
     @ObservedObject var vm: PostViewModel
+    @State private var showMore = false
     
     init(nonCheckedPost: Post){
         self.vm = PostViewModel(nonCheckedPost: nonCheckedPost)
     }
-    
     
     var body: some View {
         LazyVStack{
@@ -117,7 +126,6 @@ struct PostView: View {
                             .cornerRadius(100)
                             .zIndex(1)
                         
-                        
                     }
                     
                     Text(vm.post.authorName)
@@ -130,30 +138,50 @@ struct PostView: View {
                 
                 Image(systemName: "equal")
                 
-                
             }
             .padding(.horizontal)
-            
-            
             
             if vm.post.postImageUrl.count < 10 {
                 WebImage(url: URL(string: "https://cdn.pixabay.com/photo/2016/11/23/00/44/arches-1851520_1280.jpg"))
                     .resizable()
                     .frame(width: 400, height: 400)
                     .scaledToFill()
+                    .onTapGesture(count: 2) {
+                        //click image and like button
+                        if vm.post.didLike == false {
+                            vm.likeThisPost()
+                        }
+                    }
             } else {
                 WebImage(url: URL(string: vm.post.postImageUrl))
                     .resizable()
                     .frame(width: 400, height: 400)
                     .scaledToFill()
+                    .onTapGesture(count: 2) {
+                        if vm.post.didLike == false {
+                            vm.likeThisPost()
+                        }
+                    }
             }
             
             HStack{
-                Button {
-                    print("i love it")
-                } label: {
-                    Image(systemName: "heart")
-                        .foregroundColor(Color.black)
+                //already liked
+                if vm.post.didLike == true {
+                    Button {
+                        vm.unlikeThisPost()
+                    } label: {
+                        Image(systemName: "heart.fill")
+                            .foregroundColor(Color.red)
+                    }
+                    
+                    //liked not yet
+                } else {
+                    Button {
+                        vm.likeThisPost()
+                    } label: {
+                        Image(systemName: "heart")
+                            .foregroundColor(Color.black)
+                    }
                 }
                 
                 Image(systemName: "message")
@@ -166,21 +194,31 @@ struct PostView: View {
             .padding(.horizontal)
             .padding(.vertical, 10)
             
-            
-            HStack(alignment: .bottom){
-                Text(vm.post.postText)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal)
-                    .lineLimit(2)
-                
-                if vm.post.postText.count > 30 {
-                    Button {
-                        print("show more")
-                    } label: {
-                        Text("more...")
-                            .foregroundColor(Color.gray)
+            if self.showMore == false {
+                HStack(alignment: .bottom){
+                    Text(vm.post.postText)
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal)
+                        .lineLimit(1)
+                    
+                    if vm.post.postText.count > 30 && self.showMore == false {
+                        Button {
+                            self.showMore.toggle()
+                        } label: {
+                            Text("more...")
+                                .foregroundColor(Color.gray)
+                        }
                     }
+                }
+                
+            } else {
+                
+                HStack(alignment: .bottom){
+                    Text(vm.post.postText)
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal)
                 }
                 
             }
@@ -188,22 +226,16 @@ struct PostView: View {
             HStack{
                 Text(vm.post.time.dateValue(), style: .time)
                 Text(vm.post.time.dateValue(), style: .date)
-               
+                
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal)
             .foregroundColor(Color.gray)
             
-            
-            
-            
             Divider()
             
         }
     }
-    
-    
-    
 }
 
 struct PostsView_Previews: PreviewProvider {
