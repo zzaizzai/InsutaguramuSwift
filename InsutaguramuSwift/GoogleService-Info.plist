@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>105803880251-0j6qho8r8ga71vicsb4ailp98jhvmp04.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.105803880251-0j6qho8r8ga71vicsb4ailp98jhvmp04</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDiHL25Iqm1FRggwV7s5N9aPv5w7OjeEtk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>105803880251</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.jun.InsutaguramuSwift</string>
+	<key>PROJECT_ID</key>
+	<string>instaswift-7a14d</string>
+	<key>STORAGE_BUCKET</key>
+	<string>instaswift-7a14d.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:105803880251:ios:1063858f736736c0de491e</string>
+</dict>
+</plist>

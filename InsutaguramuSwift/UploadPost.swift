@@ -23,7 +23,6 @@ class UploadPostViewModel: ObservableObject {
             return
         }
         
-        
         let uploadPostData = [
             "authorUid" : currentUser.uid,
             "authorEmail" : currentUser.email,
@@ -79,18 +78,10 @@ class UploadPostViewModel: ObservableObject {
                         self.errorMessage = "store image done"
                         completion(true)
                     }
-                    
-                    
                 }
-                
-                
             }
         }
-        
     }
-    
-    
-    
 }
 
 struct UploadPost: View {
@@ -117,21 +108,30 @@ struct UploadPost: View {
                     Text(vm.errorMessage)
                     Spacer()
                     
-                    Button {
-                        vm.uploadPost(uploadText: self.uploadText, uploadImage: self.uploadImage! , currentUser: vmAuth.currentUser!){ didUpload in
-                            if didUpload == true {
-                                self.uploadImage = nil
-                                self.uploadText = ""
-                            }
-                        }
-                        
-                    } label: {
+                    if self.uploadImage == nil || self.uploadText.count < 5 {
                         Text("upload")
-                            .foregroundColor(Color.white)
+                            .padding()
+                            .foregroundColor(Color.gray)
+                            .background(Color.black)
+                            .cornerRadius(30)
+                    } else {
+                        Button {
+                            vm.uploadPost(uploadText: self.uploadText, uploadImage: self.uploadImage! , currentUser: vmAuth.currentUser!){ didUpload in
+                                if didUpload == true {
+                                    self.uploadImage = nil
+                                    self.uploadText = ""
+                                }
+                            }
+                            
+                        } label: {
+                            Text("upload")
+                                .foregroundColor(Color.white)
+                        }
+                        .padding()
+                        .background(Color.gray)
+                        .cornerRadius(30)
                     }
-                    .padding()
-                    .background(Color.gray)
-                    .cornerRadius(30)
+                    
                 }
                 .padding(.horizontal)
                 
@@ -157,7 +157,6 @@ struct UploadPost: View {
                         }
                         .padding()
                         
-                        
                     }
                 }
                 
@@ -169,7 +168,7 @@ struct UploadPost: View {
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: .infinity, height: 400, alignment: .center)
-                            .scaledToFit()
+                            .scaledToFill()
                         
                     } else {
                         Image(systemName: "photo")
