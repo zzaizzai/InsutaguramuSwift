@@ -118,8 +118,10 @@ class UserProfileViewModel: ObservableObject {
 
 
 struct UserProfileView: View {
+    
     let userUid: String
     @ObservedObject var vm : UserProfileViewModel
+    @EnvironmentObject var vmAuth: AuthViewModel
     
     @State var showOptions = false
     
@@ -130,73 +132,103 @@ struct UserProfileView: View {
         
     }
     
+    
     var body: some View {
         VStack {
             ScrollView {
-                VStack{
-                    
-                    HStack{
-                        ZStack{
-                            WebImage(url: URL(string: vm.currentProfileUser?.profileImageUrl ?? "no url"))
-                                .resizable()
-                                .frame(width: 120, height: 120)
-                                .scaledToFill()
-                                .cornerRadius(100)
-                                .zIndex(1)
-                            
-                            Image(systemName: "person")
-                                .font(.system(size: 110))
-                                .background(Color.gray)
-                            //                        .frame(width: 120, height: 120)
-                            //                        .scaledToFill()
-                                .cornerRadius(100)
-                            
-                        }
-                        
-                        Spacer()
-                        
-                        VStack{
-                            
-                            Text(vm.profileUserPosts.count.description)
-                            Text("posts")
-                        }
-                        
-                        VStack{
-                            
-                            Text("1")
-                            Text("follower")
-                        }
-                        
-                        VStack{
-                            
-                            Text("1")
-                            Text("following")
-                        }
-                    }
-                    .padding(.horizontal)
-                    
-                    LazyVStack(alignment: .leading ) {
-                        Text(vm.currentProfileUser?.email ?? "no email")
-                        Text(vm.currentProfileUser?.name ?? "no name" )
-                        //                        Text(vmAuth.currentUser?.uid ?? "no uid" )
-                        Text(vm.currentProfileUser?.profileText ?? "no profil text")
-                    }
-                    .padding(.horizontal)
-                    
-                    Divider()
-                    
-                    filterBar
-                    
-                    profilePostsview
-                    
-                    
+                
+                if self.userUid == (vmAuth.currentUser?.uid ?? "no uid") {
+                    Text("my profile")
                 }
+                
+                
+                profileView
                 //                    .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle(vm.currentProfileUser?.name ?? "user name" )
-                
-                
+                .navigationBarItems(trailing:
+                                        VStack{
+
+                    Button {
+                        self.showOptions.toggle()
+                    } label: {
+                        Image(systemName: "equal")
+                            .foregroundColor(Color.black)
+                    }
+                })
+            }
+            .actionSheet(isPresented: $showOptions) {
+                .init(title: Text("title"),
+                      buttons: [
+                        .default(Text("setting"), action: {
+                            print("setting")
+                        }),
+                        .destructive(Text("sign out"), action: {
+                            vmAuth.logOut()
+                        }), .cancel()
+                      ])
             }
         }
+    }
+    
+    private var profileView: some View {
+        VStack{
+            
+            HStack{
+                ZStack{
+                    WebImage(url: URL(string: vm.currentProfileUser?.profileImageUrl ?? "no url"))
+                        .resizable()
+                        .frame(width: 120, height: 120)
+                        .scaledToFill()
+                        .cornerRadius(100)
+                        .zIndex(1)
+                    
+                    Image(systemName: "person")
+                        .font(.system(size: 110))
+                        .background(Color.gray)
+                    //                        .frame(width: 120, height: 120)
+                    //                        .scaledToFill()
+                        .cornerRadius(100)
+                    
+                }
+                
+                Spacer()
+                
+                VStack{
+                    
+                    Text(vm.profileUserPosts.count.description)
+                    Text("posts")
+                }
+                
+                VStack{
+                    
+                    Text("1")
+                    Text("follower")
+                }
+                
+                VStack{
+                    
+                    Text("1")
+                    Text("following")
+                }
+            }
+            .padding(.horizontal)
+            
+            LazyVStack(alignment: .leading ) {
+                Text(vm.currentProfileUser?.email ?? "no email")
+                Text(vm.currentProfileUser?.name ?? "no name" )
+                Text(vm.currentProfileUser?.profileText ?? "no profil text")
+            }
+            .padding(.horizontal)
+            
+            Divider()
+            
+            filterBar
+            
+            profilePostsview
+            
+            
+        }
+        
     }
     
     let filters = ["posts", "liked"]
@@ -257,6 +289,7 @@ struct UserProfileView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView{
             UserProfileView(userUid: "Akct8DqUtdZJYCc9yn2UojJqlNY2")
+                .environmentObject(AuthViewModel())
                 .navigationBarTitleDisplayMode(.inline)
         }
     }

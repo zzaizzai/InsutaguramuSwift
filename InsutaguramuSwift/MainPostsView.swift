@@ -97,6 +97,7 @@ class PostViewModel: ObservableObject {
     @Published var post: Post
     
     
+    
     //nothing check
     init(nonCheckedPost: Post){
         self.post = nonCheckedPost
@@ -196,6 +197,7 @@ class PostViewModel: ObservableObject {
 
 struct PostView: View {
     @ObservedObject var vm: PostViewModel
+    @EnvironmentObject var vmAuth: AuthViewModel
     @State private var showMore = false
     @State private var showComments = false
     @State private var showProfile = false
@@ -360,5 +362,6 @@ struct PostView: View {
 struct PostsView_Previews: PreviewProvider {
     static var previews: some View {
         MainPostsView()
+            .environmentObject(AuthViewModel())
     }
 }
