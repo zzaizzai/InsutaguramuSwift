@@ -10,6 +10,8 @@ import SwiftUI
 struct MainTabView: View {
     
     @State private var titleName = "main"
+    @EnvironmentObject var vmAuth: AuthViewModel
+    
     
     var body: some View {
 //        NavigationView{
@@ -33,7 +35,7 @@ struct MainTabView: View {
                     }
                     .tag("33")
                 
-                ProfileView()
+                UserProfileView(userUid: vmAuth.currentUser?.uid ?? "no uid")
 //                    .environmentObject(AuthViewModel())
                     .tabItem {
                         Image(systemName: "person")
