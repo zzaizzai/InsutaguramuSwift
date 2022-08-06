@@ -142,8 +142,9 @@ struct UploadPost: View {
                 ZStack(alignment: .top){
                     TextEditor(text: $uploadText)
                         .padding()
-                        .background(Color.gray)
                         .frame(width: .infinity, height: 200)
+                        .background(Color.gray)
+                        
                     
                     if self.uploadText.isEmpty {
                         

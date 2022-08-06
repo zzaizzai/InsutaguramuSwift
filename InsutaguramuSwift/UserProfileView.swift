@@ -8,6 +8,7 @@
 import SwiftUI
 import Firebase
 import SDWebImageSwiftUI
+import RefreshableScrollView
 
 class UserProfileViewModel: ObservableObject {
     
@@ -43,6 +44,8 @@ class UserProfileViewModel: ObservableObject {
     func fetchUserPosts(userUid: String) {
         
         
+        self.profileUserPosts.removeAll()
+        
         Firestore.firestore().collection("posts").whereField("authorUid", isEqualTo: userUid).order(by: "time").getDocuments { snapshots, error in
             if let error = error {
                 print(error)
@@ -60,29 +63,11 @@ class UserProfileViewModel: ObservableObject {
         }
     }
     
-    func fetchUserLikedPosts(userUid: String) {
-        
-        
-        Firestore.firestore().collection("likes").whereField("authorUid", isEqualTo: userUid).order(by: "time").getDocuments { snapshots, error in
-            if let error = error {
-                print(error)
-                return
-            }
-            
-            snapshots?.documents.forEach({ doc in
-                let documentId = doc.documentID
-                let data = doc.data()
-                
-                self.profileUserPosts.insert(.init(documentId: documentId, data: data), at: 0)
-            })
-        }
-    }
-    
     
     func fetchMyLikedPostsUid(userUid: String, completion: @escaping(String) -> Void) {
         
         
-        Firestore.firestore().collection("likes").document(userUid).collection("likes-posts").order(by: "postTime", descending: false).getDocuments { snapshot, error in
+        Firestore.firestore().collection("likes").document(userUid).collection("likes-posts").order(by: "postTime", descending: true).getDocuments { snapshot, error in
             if let error = error {
                 print(error)
                 return
@@ -97,6 +82,8 @@ class UserProfileViewModel: ObservableObject {
     }
     
     func fetchMyLikedPost(postUid: String) {
+        
+        self.profileUserLikedPosts.removeAll()
         
         fetchMyLikedPostsUid(userUid: postUid) { postUid in
             
@@ -135,27 +122,33 @@ struct UserProfileView: View {
     
     var body: some View {
         VStack {
-            ScrollView {
+            RefreshableScrollView {
                 
-                if self.userUid == (vmAuth.currentUser?.uid ?? "no uid") {
-                    Text("my profile")
-                }
+                
                 
                 
                 profileView
-                //                    .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle(vm.currentProfileUser?.name ?? "user name" )
-                .navigationBarItems(trailing:
-                                        VStack{
-
-                    Button {
-                        self.showOptions.toggle()
-                    } label: {
-                        Image(systemName: "equal")
-                            .foregroundColor(Color.black)
-                    }
-                })
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationTitle(vm.currentProfileUser?.name ?? "user name" )
+                    .navigationBarItems(trailing:
+                                            VStack{
+                        
+                        if self.userUid == (vmAuth.currentUser?.uid ?? "no uid") {
+                            
+                            Button {
+                                self.showOptions.toggle()
+                            } label: {
+                                Image(systemName: "equal")
+                                    .foregroundColor(Color.black)
+                            }
+                        }
+                    })
             }
+            .refreshable {
+                vm.fetchUserPosts(userUid: self.userUid)
+                vm.fetchMyLikedPost(postUid: self.userUid)
+            }
+            
             .actionSheet(isPresented: $showOptions) {
                 .init(title: Text("title"),
                       buttons: [
@@ -167,7 +160,9 @@ struct UserProfileView: View {
                         }), .cancel()
                       ])
             }
+
         }
+
     }
     
     private var profileView: some View {

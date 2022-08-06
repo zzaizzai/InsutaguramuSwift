@@ -10,6 +10,8 @@
 		A60462C12896C5B3008276E7 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60462C02896C5B3008276E7 /* ImagePicker.swift */; };
 		A62FCEF9289E5FD800B88D9C /* PostCommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A62FCEF8289E5FD800B88D9C /* PostCommentView.swift */; };
 		A62FCEFB289E61E800B88D9C /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A62FCEFA289E61E800B88D9C /* UserProfileView.swift */; };
+		A62FCF00289EA7EF00B88D9C /* LaboView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A62FCEFF289EA7EF00B88D9C /* LaboView.swift */; };
+		A62FCF03289EAC0400B88D9C /* RefreshableScrollView in Frameworks */ = {isa = PBXBuildFile; productRef = A62FCF02289EAC0400B88D9C /* RefreshableScrollView */; };
 		A641A3C8289679A10016041C /* InsutaguramuSwiftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3C7289679A10016041C /* InsutaguramuSwiftApp.swift */; };
 		A641A3CA289679A10016041C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3C9289679A10016041C /* ContentView.swift */; };
 		A641A3CC289679A30016041C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A641A3CB289679A30016041C /* Assets.xcassets */; };
@@ -22,7 +24,6 @@
 		A641A3E1289681510016041C /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3E0289681510016041C /* LoginView.swift */; };
 		A641A3E3289681640016041C /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3E2289681640016041C /* MainTabView.swift */; };
 		A641A3E52896817D0016041C /* MainPostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3E42896817D0016041C /* MainPostsView.swift */; };
-		A641A3E72896819B0016041C /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3E62896819B0016041C /* ProfileView.swift */; };
 		A641A3E92896888A0016041C /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3E82896888A0016041C /* AuthViewModel.swift */; };
 		A641A3EB289689510016041C /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A641A3EA289689510016041C /* Models.swift */; };
 		A6C338BB2896DB50008D37FD /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = A6C338BA2896DB50008D37FD /* SDWebImageSwiftUI */; };
@@ -34,6 +35,7 @@
 		A60462C02896C5B3008276E7 /* ImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		A62FCEF8289E5FD800B88D9C /* PostCommentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCommentView.swift; sourceTree = "<group>"; };
 		A62FCEFA289E61E800B88D9C /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
+		A62FCEFF289EA7EF00B88D9C /* LaboView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaboView.swift; sourceTree = "<group>"; };
 		A641A3C4289679A10016041C /* InsutaguramuSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InsutaguramuSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A641A3C7289679A10016041C /* InsutaguramuSwiftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsutaguramuSwiftApp.swift; sourceTree = "<group>"; };
 		A641A3C9289679A10016041C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -43,7 +45,6 @@
 		A641A3E0289681510016041C /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		A641A3E2289681640016041C /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		A641A3E42896817D0016041C /* MainPostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPostsView.swift; sourceTree = "<group>"; };
-		A641A3E62896819B0016041C /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		A641A3E82896888A0016041C /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		A641A3EA289689510016041C /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		A6C338BC2897DD3E008D37FD /* UploadPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPost.swift; sourceTree = "<group>"; };
@@ -59,6 +60,7 @@
 				A641A3DB28967A430016041C /* FirebaseFirestoreSwift-Beta in Frameworks */,
 				A641A3DD28967A430016041C /* FirebaseStorage in Frameworks */,
 				A641A3D728967A430016041C /* FirebaseAuth in Frameworks */,
+				A62FCF03289EAC0400B88D9C /* RefreshableScrollView in Frameworks */,
 				A641A3D928967A430016041C /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -98,7 +100,7 @@
 				A641A3E42896817D0016041C /* MainPostsView.swift */,
 				A62FCEFA289E61E800B88D9C /* UserProfileView.swift */,
 				A62FCEF8289E5FD800B88D9C /* PostCommentView.swift */,
-				A641A3E62896819B0016041C /* ProfileView.swift */,
+				A62FCEFF289EA7EF00B88D9C /* LaboView.swift */,
 				A641A3CB289679A30016041C /* Assets.xcassets */,
 				A641A3CD289679A30016041C /* Preview Content */,
 			);
@@ -135,6 +137,7 @@
 				A641A3DA28967A430016041C /* FirebaseFirestoreSwift-Beta */,
 				A641A3DC28967A430016041C /* FirebaseStorage */,
 				A6C338BA2896DB50008D37FD /* SDWebImageSwiftUI */,
+				A62FCF02289EAC0400B88D9C /* RefreshableScrollView */,
 			);
 			productName = InsutaguramuSwift;
 			productReference = A641A3C4289679A10016041C /* InsutaguramuSwift.app */;
@@ -167,6 +170,7 @@
 			packageReferences = (
 				A641A3D528967A430016041C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				A6C338B92896DB50008D37FD /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+				A62FCF01289EAC0400B88D9C /* XCRemoteSwiftPackageReference "RefreshableScrollView" */,
 			);
 			productRefGroup = A641A3C5289679A10016041C /* Products */;
 			projectDirPath = "";
@@ -198,6 +202,7 @@
 			files = (
 				A6C338BD2897DD3E008D37FD /* UploadPost.swift in Sources */,
 				A62FCEF9289E5FD800B88D9C /* PostCommentView.swift in Sources */,
+				A62FCF00289EA7EF00B88D9C /* LaboView.swift in Sources */,
 				A641A3E1289681510016041C /* LoginView.swift in Sources */,
 				A641A3CA289679A10016041C /* ContentView.swift in Sources */,
 				A641A3C8289679A10016041C /* InsutaguramuSwiftApp.swift in Sources */,
@@ -206,7 +211,6 @@
 				A62FCEFB289E61E800B88D9C /* UserProfileView.swift in Sources */,
 				A641A3E92896888A0016041C /* AuthViewModel.swift in Sources */,
 				A641A3E52896817D0016041C /* MainPostsView.swift in Sources */,
-				A641A3E72896819B0016041C /* ProfileView.swift in Sources */,
 				A641A3E3289681640016041C /* MainTabView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -408,6 +412,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		A62FCF01289EAC0400B88D9C /* XCRemoteSwiftPackageReference "RefreshableScrollView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Q42/RefreshableScrollView.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		A641A3D528967A430016041C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -428,6 +440,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		A62FCF02289EAC0400B88D9C /* RefreshableScrollView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A62FCF01289EAC0400B88D9C /* XCRemoteSwiftPackageReference "RefreshableScrollView" */;
+			productName = RefreshableScrollView;
+		};
 		A641A3D628967A430016041C /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A641A3D528967A430016041C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

@@ -8,6 +8,7 @@
 import SwiftUI
 import SDWebImageSwiftUI
 import Firebase
+import RefreshableScrollView
 
 class MainPostsViewModel: ObservableObject {
     @Published var posts = [Post]()
@@ -44,7 +45,8 @@ struct MainPostsView: View {
     
     var body: some View {
         NavigationView{
-            ScrollView {
+            
+            RefreshableScrollView {
                 VStack{
                     ForEach(vm.posts){ post in
                         PostView(nonCheckedPost: post)
@@ -53,6 +55,9 @@ struct MainPostsView: View {
                     }
                     
                 }
+            }
+            .refreshable {
+                vm.fetchPosts()
             }
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
