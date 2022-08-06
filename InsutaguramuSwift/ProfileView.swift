@@ -97,11 +97,11 @@ class ProfileViewModel: ObservableObject{
                 return
             }
             
-            guard let doc = snapshot else { return }
-            let data = doc.data()
-            let documentId = doc.documentID
+            guard let data = snapshot?.data() else { return }
+            guard let documentId = snapshot?.documentID else { return }
             
-            self.myLikedPosts.insert(.init(documentId: documentId, data: data!), at: 0)
+            self.myLikedPosts.append(.init(documentId: documentId, data: data))
+            
             
             
             
@@ -247,14 +247,13 @@ struct ProfileView: View {
                 VStack{
                     ForEach(vm.myPosts){ post in
                         PostView(nonCheckedPost: post)
-//                        Text(post.time.dateValue(), style: .date)
-//                        Text("post")
+
                     }
                 }
             } else {
                 VStack{
-                    ForEach(vm.myLikedPosts){ post in
-                        PostView(nonCheckedPost: post)
+                    ForEach(vm.myLikedPosts){ likedpost in
+                        PostView(nonCheckedPost: likedpost)
                     }
                 }
             }
