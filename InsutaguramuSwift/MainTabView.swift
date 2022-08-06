@@ -35,12 +35,14 @@ struct MainTabView: View {
                     }
                     .tag("33")
                 
-                UserProfileView(userUid: vmAuth.currentUser?.uid ?? "no uid")
-//                    .environmentObject(AuthViewModel())
-                    .tabItem {
-                        Image(systemName: "person")
-                    }
-                    .tag("44")
+                NavigationView{
+                    UserProfileView(userUid: vmAuth.currentUser?.uid ?? "no uid")
+    //                    .environmentObject(AuthViewModel())
+                }
+                .tabItem {
+                    Image(systemName: "person")
+                }
+                .tag("44")
             }
 //            .navigationTitle(self.titleName)
 //            .navigationBarTitleDisplayMode(.inline)
