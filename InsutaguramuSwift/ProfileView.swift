@@ -7,9 +7,114 @@
 
 import SwiftUI
 import SDWebImageSwiftUI
+import Firebase
+import FirebaseFirestore
+
+
+struct PostUid: Identifiable, Codable {
+    
+    var id : String { documentId }
+    
+    let documentId: String
+    let postUid : String
+    let time: Timestamp
+    let postTime: Timestamp
+    
+    
+    init(documentId: String, data: [String:Any] ) {
+        self.documentId = documentId
+        self.postUid = data["authorUid"] as? String ?? "no authorUid"
+        
+        self.time = data["time"] as? Timestamp ?? Timestamp()
+        self.postTime = data["postTime"] as? Timestamp ?? Timestamp()
+    }
+}
+
+
+class ProfileViewModel: ObservableObject{
+    @Published var myPosts = [Post]()
+    @Published var myLikedPostsUid = [PostUid]()
+    @Published var myLikedPosts = [Post]()
+    
+    
+    
+    init(){
+        
+        fetchMyPosts()
+        fetchMyLikedPostsUid()
+    }
+    
+    func fetchMyPosts() {
+        
+        guard let myUid = Auth.auth().currentUser?.uid else { return }
+        
+        Firestore.firestore().collection("posts").whereField("authorUid",isEqualTo: myUid).order(by: "time").getDocuments { snapsnots, error in
+            if let error = error {
+                print(error)
+                return
+            }
+            
+            snapsnots?.documents.forEach({ doc in
+                
+                let data = doc.data()
+                let documentId = doc.documentID
+                
+                self.myPosts.insert(.init(documentId: documentId, data: data), at: 0)
+                
+            })
+        }
+    }
+    
+    func fetchMyLikedPostsUid() {
+        guard let myUid = Auth.auth().currentUser?.uid else { return }
+        
+        Firestore.firestore().collection("likes").document(myUid).collection("likes-posts").order(by: "postTime").getDocuments { snapshot, error in
+            if let error = error {
+                print(error)
+                return
+            }
+            
+            snapshot?.documents.forEach({ doc in
+                let data = doc.data()
+                let documentId = doc.documentID
+                
+                self.myLikedPostsUid.insert(.init(documentId: documentId, data: data), at: 0)
+                
+                self.fetchMyLikedPost(postUid: documentId)
+                
+            })
+            
+        }
+        
+        
+    }
+    
+    func fetchMyLikedPost(postUid: String) {
+        
+        Firestore.firestore().collection("posts").document(postUid).getDocument { snapshot, error in
+            if let error = error {
+                print(error)
+                return
+            }
+            
+            guard let doc = snapshot else { return }
+            let data = doc.data()
+            let documentId = doc.documentID
+            
+            self.myLikedPosts.insert(.init(documentId: documentId, data: data!), at: 0)
+            
+            
+            
+        }
+        
+    }
+}
 
 struct ProfileView: View {
     @EnvironmentObject var vmAuth : AuthViewModel
+    
+    @ObservedObject var vm = ProfileViewModel()
+    
     @State var showOptions = false
     
     var body: some View {
@@ -43,7 +148,7 @@ struct ProfileView: View {
                             
                             VStack{
                                 
-                                Text("1")
+                                Text(vm.myPosts.count.description)
                                 Text("posts")
                             }
                             
@@ -140,14 +245,16 @@ struct ProfileView: View {
         VStack{
             if self.currentFilter == "posts" {
                 VStack{
-                    ForEach(0..<5){ post in
-                        Text("posts")
+                    ForEach(vm.myPosts){ post in
+                        PostView(nonCheckedPost: post)
+//                        Text(post.time.dateValue(), style: .date)
+//                        Text("post")
                     }
                 }
             } else {
                 VStack{
-                    ForEach(0..<5){ post in
-                        Text("liked")
+                    ForEach(vm.myLikedPosts){ post in
+                        PostView(nonCheckedPost: post)
                     }
                 }
             }
