@@ -54,15 +54,23 @@ struct MainPostsView: View {
                     
                 }
             }
-            .navigationTitle("main post")
+            .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(leading:
+                                    VStack{
+                Text("Insutaguramu")
+                    .foregroundColor(Color.black)
+                    .fontWeight(.heavy)
+                
+            })
             .navigationBarItems(trailing:
                                     VStack{
                 Button {
                     vm.fetchPosts()
                 } label: {
-                    Text("fetchPosts")
+                    Text("fetch posts")
                         .foregroundColor(Color.black)
+                        .fontWeight(.heavy)
                 }
                 
             })
@@ -102,6 +110,10 @@ class PostViewModel: ObservableObject {
     
     func likeThisPost(post: Post) {
         
+        if post.didLike == true {
+            return
+        }
+        
         guard let myUid = Auth.auth().currentUser?.uid else { return }
         let postId = post.documentId
         
@@ -113,7 +125,8 @@ class PostViewModel: ObservableObject {
             
             let data = [
                 "postUid": postId,
-                "time": Date()
+                "time": Date(),
+                "postTime": post.time
             
             ] as [String:Any]
             
@@ -133,6 +146,10 @@ class PostViewModel: ObservableObject {
     }
     
     func unlikeThisPost(post: Post) {
+        
+        if post.didLike == false {
+            return
+        }
         guard let myUid = Auth.auth().currentUser?.uid else { return }
         let postId = post.documentId
         guard post.likes > 0 else {
@@ -180,6 +197,8 @@ class PostViewModel: ObservableObject {
 struct PostView: View {
     @ObservedObject var vm: PostViewModel
     @State private var showMore = false
+    @State private var showComments = false
+    @State private var showProfile = false
     
     init(nonCheckedPost: Post){
         self.vm = PostViewModel(nonCheckedPost: nonCheckedPost)
@@ -189,10 +208,8 @@ struct PostView: View {
         LazyVStack{
             HStack{
                 
-                Button {
-                    print("show profile")
-                } label: {
-                    
+                
+                HStack{
                     ZStack{
                         WebImage(url: URL(string: vm.post.authorProfileUrl))
                             .resizable()
@@ -201,6 +218,12 @@ struct PostView: View {
                             .cornerRadius(100)
                             .zIndex(1)
                         
+                        Image(systemName: "person")
+                            .resizable()
+                            .frame(width: 35, height: 35)
+                            .background(Color.gray)
+                            .cornerRadius(100)
+                        
                     }
                     
                     Text(vm.post.authorName)
@@ -208,6 +231,9 @@ struct PostView: View {
                         .foregroundColor(Color.black)
                     
                     Spacer()
+                }
+                .onTapGesture {
+                    self.showProfile.toggle()
                 }
                 
                 
@@ -259,7 +285,15 @@ struct PostView: View {
                     }
                 }
                 Text(vm.post.likes.description)
-                Image(systemName: "message")
+                Button {
+                    self.showComments.toggle()
+                } label: {
+                    Image(systemName: "message")
+                        .foregroundColor(Color.black)
+                }
+                
+
+
                 Image(systemName: "paperplane")
                 
                 Spacer()
@@ -309,6 +343,16 @@ struct PostView: View {
             
             Divider()
             
+        }
+        
+        
+        //navigations
+        NavigationLink("", isActive: $showComments) {
+            PostCommentView(postUid: vm.post.id)
+        }
+        
+        NavigationLink("", isActive: $showProfile) {
+            UserProfileView(userUid: vm.post.authorUid)
         }
     }
 }
