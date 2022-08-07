@@ -76,9 +76,9 @@ struct MainPostsView: View {
                 Button {
                     vm.fetchPosts()
                 } label: {
-                    Text("fetch posts")
+                    Image(systemName: "arrow.up")
                         .foregroundColor(Color.black)
-                        .fontWeight(.heavy)
+
                 }
                 
             })

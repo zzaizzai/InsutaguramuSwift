@@ -21,7 +21,7 @@ class UserProfileViewModel: ObservableObject {
         self.userUid = userUid
         fetchUserPorifle()
         fetchUserPosts(userUid: userUid)
-        fetchMyLikedPost(postUid: userUid)
+        fetchMyLikedPost(userUid: userUid)
     }
     
     func fetchUserPorifle() {
@@ -81,11 +81,11 @@ class UserProfileViewModel: ObservableObject {
         }
     }
     
-    func fetchMyLikedPost(postUid: String) {
+    func fetchMyLikedPost(userUid: String) {
         
         self.profileUserLikedPosts.removeAll()
         
-        fetchMyLikedPostsUid(userUid: postUid) { postUid in
+        fetchMyLikedPostsUid(userUid: userUid) { postUid in
             
             Firestore.firestore().collection("posts").document(postUid).getDocument { snapshot, error in
                 if let error = error {
@@ -122,10 +122,7 @@ struct UserProfileView: View {
     
     var body: some View {
         VStack {
-            RefreshableScrollView {
-                
-                
-                
+            ScrollView {
                 
                 profileView
                     .navigationBarTitleDisplayMode(.inline)
@@ -134,19 +131,27 @@ struct UserProfileView: View {
                                             VStack{
                         
                         if self.userUid == (vmAuth.currentUser?.uid ?? "no uid") {
-                            
-                            Button {
-                                self.showOptions.toggle()
-                            } label: {
-                                Image(systemName: "equal")
-                                    .foregroundColor(Color.black)
+                            HStack{
+                                Button {
+                                    vm.fetchUserPosts(userUid: self.userUid)
+                                    vm.fetchMyLikedPost(userUid: self.userUid)
+                                } label: {
+                                    Image(systemName: "arrow.up")
+                                        .foregroundColor(Color.black)
+                                }
+                                
+                                Spacer()
+                                
+                                Button {
+                                    self.showOptions.toggle()
+                                } label: {
+                                    Image(systemName: "equal")
+                                        .foregroundColor(Color.black)
+                                }
+                                .padding(.horizontal)
                             }
                         }
                     })
-            }
-            .refreshable {
-                vm.fetchUserPosts(userUid: self.userUid)
-                vm.fetchMyLikedPost(postUid: self.userUid)
             }
             
             .actionSheet(isPresented: $showOptions) {
@@ -214,6 +219,24 @@ struct UserProfileView: View {
                 Text(vm.currentProfileUser?.profileText ?? "no profil text")
             }
             .padding(.horizontal)
+            
+            
+            if self.userUid != (vmAuth.currentUser?.uid ?? "no uid") {
+                Button {
+                    print("chat")
+                } label: {
+                    Spacer()
+                    Text("Chat")
+                        .foregroundColor(Color.white)
+                        .padding(.vertical, 8)
+                    
+                    Spacer()
+                }
+                .background(Color.gray)
+                
+            }
+
+
             
             Divider()
             

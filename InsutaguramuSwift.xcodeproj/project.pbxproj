@@ -29,6 +29,7 @@
 		A6C338BB2896DB50008D37FD /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = A6C338BA2896DB50008D37FD /* SDWebImageSwiftUI */; };
 		A6C338BD2897DD3E008D37FD /* UploadPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6C338BC2897DD3E008D37FD /* UploadPost.swift */; };
 		A6C338BF289A7A0D008D37FD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = A6C338BE289A7A0D008D37FD /* README.md */; };
+		A6CF37A8289FE4C0006B570A /* MainRecentMessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6CF37A7289FE4C0006B570A /* MainRecentMessagesView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +50,7 @@
 		A641A3EA289689510016041C /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		A6C338BC2897DD3E008D37FD /* UploadPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPost.swift; sourceTree = "<group>"; };
 		A6C338BE289A7A0D008D37FD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		A6CF37A7289FE4C0006B570A /* MainRecentMessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainRecentMessagesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +95,7 @@
 				A641A3C9289679A10016041C /* ContentView.swift */,
 				A60462C02896C5B3008276E7 /* ImagePicker.swift */,
 				A641A3E0289681510016041C /* LoginView.swift */,
+				A6CF37A7289FE4C0006B570A /* MainRecentMessagesView.swift */,
 				A6C338BC2897DD3E008D37FD /* UploadPost.swift */,
 				A641A3E82896888A0016041C /* AuthViewModel.swift */,
 				A641A3E2289681640016041C /* MainTabView.swift */,
@@ -207,6 +210,7 @@
 				A641A3CA289679A10016041C /* ContentView.swift in Sources */,
 				A641A3C8289679A10016041C /* InsutaguramuSwiftApp.swift in Sources */,
 				A60462C12896C5B3008276E7 /* ImagePicker.swift in Sources */,
+				A6CF37A8289FE4C0006B570A /* MainRecentMessagesView.swift in Sources */,
 				A641A3EB289689510016041C /* Models.swift in Sources */,
 				A62FCEFB289E61E800B88D9C /* UserProfileView.swift in Sources */,
 				A641A3E92896888A0016041C /* AuthViewModel.swift in Sources */,

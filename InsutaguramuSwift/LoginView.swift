@@ -44,7 +44,7 @@ struct LoginView: View {
                 TextField("password", text: $password)
             }
             .padding()
-            .background(Capsule().fill(Color.gray))
+            .background(Capsule().fill(Color.init(white: 0.8)))
             .autocapitalization(.none)
             .padding()
             
@@ -99,7 +99,7 @@ struct LoginView: View {
                 TextField("password", text: $password)
             }
             .padding()
-            .background(Capsule().fill(Color.gray))
+            .background(Capsule().fill(Color.init(white: 0.8)))
             .autocapitalization(.none)
             .padding()
             
