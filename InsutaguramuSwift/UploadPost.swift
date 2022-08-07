@@ -13,7 +13,7 @@ import Firebase
 class UploadPostViewModel: ObservableObject {
     
     
-    @Published var errorMessage = "error"
+    @Published var errorMessage = ""
     
     
     func uploadPost(uploadText: String, uploadImage:UIImage , currentUser: User, completion: @escaping (Bool)-> Void) {
@@ -99,11 +99,6 @@ struct UploadPost: View {
             VStack{
                 
                 HStack{
-                    Button {
-                        print("dd")
-                    } label: {
-                        Text("cancle")
-                    }
                     Spacer()
                     Text(vm.errorMessage)
                     Spacer()

@@ -58,3 +58,24 @@ struct Post: Identifiable, Codable {
         self.likes = data["likes"] as? Int ?? 0
     }
 }
+
+
+struct Comment: Identifiable {
+    
+    var id: String {documentId}
+    
+    let documentId: String
+    let commentUserName, commentUserUid, commentUserProfileUrl, postUid, text: String
+    let time: Timestamp
+    
+    init(documentId: String, data: [String:Any]) {
+        self.documentId = documentId
+        self.commentUserName = data["commentUserName"] as? String ?? "no commentUserName"
+        self.commentUserUid = data["commentUserUid"] as? String ?? "no commentUserUid"
+        self.commentUserProfileUrl = data["commentUserProfileUrl"] as? String ?? "no commentUserProfileUrl"
+        self.postUid = data["postUid"] as? String ?? "no postUid"
+        self.text = data["text"] as? String ?? "no text"
+        self.time = data["time"] as? Timestamp ?? Timestamp()
+        
+    }
+}
