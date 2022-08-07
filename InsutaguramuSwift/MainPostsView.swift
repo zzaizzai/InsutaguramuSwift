@@ -44,8 +44,8 @@ struct MainPostsView: View {
     @ObservedObject var vm = MainPostsViewModel()
     
     var body: some View {
-        NavigationView{
-            
+        
+        VStack {
             RefreshableScrollView {
                 VStack{
                     ForEach(vm.posts){ post in
@@ -57,7 +57,10 @@ struct MainPostsView: View {
                 }
             }
             .refreshable {
-                vm.fetchPosts()
+                do {
+                    //it doesnt work at content view
+                    vm.fetchPosts()
+                }
             }
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
@@ -80,6 +83,7 @@ struct MainPostsView: View {
                 
             })
         }
+        
         
     }
     
@@ -133,7 +137,7 @@ class PostViewModel: ObservableObject {
                 "postUid": postId,
                 "time": Date(),
                 "postTime": post.time
-            
+                
             ] as [String:Any]
             
             Firestore.firestore().collection("likes").document(myUid).collection("likes-posts").document(postId).setData(data) { error2 in
@@ -177,10 +181,10 @@ class PostViewModel: ObservableObject {
             }
             
             
-                
+            
         }
         
-       
+        
     }
     
     //check whether you liked or not
@@ -299,8 +303,8 @@ struct PostView: View {
                         .foregroundColor(Color.black)
                 }
                 
-
-
+                
+                
                 Image(systemName: "paperplane")
                 
                 Spacer()
@@ -366,7 +370,9 @@ struct PostView: View {
 
 struct PostsView_Previews: PreviewProvider {
     static var previews: some View {
-        MainPostsView()
-            .environmentObject(AuthViewModel())
+        NavigationView{
+            MainPostsView()
+                .environmentObject(AuthViewModel())
+        }
     }
 }
