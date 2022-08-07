@@ -10,15 +10,19 @@ import Firebase
 import SDWebImageSwiftUI
 
 
+
+
 class PostCommentViewModel: ObservableObject {
     
     @Published var postUid: String
     @Published var profileUser: User?
     @Published var currentPost: Post?
+    @Published var comments = [Comment]()
     
     init(postUid: String){
         self.postUid = postUid
         fetchUserPorifle()
+        fetchComments()
     }
     
     func fetchUserPorifle() {
@@ -38,7 +42,54 @@ class PostCommentViewModel: ObservableObject {
     }
     
     func fetchCurrentPost() {
-//        Firebase
+        
+    }
+    
+    func fetchComments() {
+        
+        self.comments.removeAll()
+        
+        Firestore.firestore().collection("posts").document(self.postUid).collection("comments").order(by: "time").getDocuments { snpashot, error in
+            if let error = error {
+                print(error)
+                return
+            }
+            
+            snpashot?.documents.forEach({ doc in
+                let documentId = doc.documentID
+                let data = doc.data()
+                
+                self.comments.append(.init(documentId: documentId, data: data))
+                
+            })
+            
+        }
+        
+    }
+    
+    func writeComment(text: String, currentUser: User?, completion: @escaping(Bool)->()){
+        
+        guard let myUser = currentUser else { return }
+        
+        let commentData = [
+            "text": text,
+            "time": Date(),
+            "postUid": self.postUid,
+            "commentUserUid": myUser.uid,
+            "commentUserName": myUser.name,
+            "commentUserProfileUrl": myUser.profileImageUrl,
+            
+        ] as [String:Any]
+        
+        Firestore.firestore().collection("posts").document(self.postUid).collection("comments").document().setData(commentData) { error in
+            if let error = error {
+                print(error)
+                return
+            }
+            
+            completion(true)
+        }
+        
         
     }
 }
@@ -47,6 +98,8 @@ struct PostCommentView: View {
     
     let postUid : String
     @ObservedObject var vm : PostCommentViewModel
+    @EnvironmentObject var vmAuth: AuthViewModel
+    
     
     init(postUid: String){
         self.postUid = postUid
@@ -57,6 +110,7 @@ struct PostCommentView: View {
     
 //    let userUid: String?
     @State var commentText = ""
+    @FocusState private var commentFocused : Bool
     var body: some View {
         VStack {
             ScrollView {
@@ -85,8 +139,13 @@ struct PostCommentView: View {
                             Text("")
                             
                             
-                            Text(vm.currentPost?.time.dateValue() ?? Date(), style: .date)
-                            Text(vm.currentPost?.time.dateValue() ?? Date(), style: .time)
+                            HStack{
+                                Text(vm.currentPost?.time.dateValue() ?? Date(), style: .date)
+                                Text(vm.currentPost?.time.dateValue() ?? Date(), style: .time)
+                                
+                            }
+                            .foregroundColor(Color.gray)
+                            
                         }
                         .padding(.horizontal)
                         
@@ -98,41 +157,91 @@ struct PostCommentView: View {
                     
                     Divider()
                     
-                    Text("show comments")
+                    ForEach(vm.comments) { comment in
+                        LazyVStack(alignment: .leading){
+                            HStack(alignment: .top){
+                                
+                               ZStack{
+                                    
+                                    WebImage(url: URL(string: comment.commentUserProfileUrl))
+                                        .resizable()
+                                        .background(Color.gray)
+                                        .frame(width: 35, height: 35)
+                                        .cornerRadius(100)
+                                        .zIndex(1)
+                                   
+                                   Image(systemName: "person")
+                                       .resizable()
+                                       .frame(width: 35, height: 35)
+                                       .background(Color.gray)
+                                       .cornerRadius(100)
+                               }
+                                
+                                VStack(alignment: .leading){
+                                    Text(comment.commentUserName)
+                                        .fontWeight(.bold)
+                                    Text(comment.text)
+                                    HStack{
+                                        Text(comment.time.dateValue(), style: . time)
+                                        Text(comment.time.dateValue(), style: . date)
+                                    }
+                                    .foregroundColor(Color.gray)
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
+                    }
                 }
                 .navigationBarTitle("Comments")
             }
             Spacer()
             
             HStack{
-                Image(systemName: "person")
-                    .resizable()
-                    .frame(width: 35, height: 35)
-                    .background(Color.gray)
-                    .cornerRadius(100)
+                ZStack{
+                    
+                    WebImage(url: URL(string: vmAuth.currentUser?.profileImageUrl ?? ""))
+                        .resizable()
+                        .background(Color.gray)
+                        .frame(width: 50, height: 50)
+                        .cornerRadius(100)
+                        .zIndex(1)
+                    
+                    
+                    Image(systemName: "person")
+                        .resizable()
+                        .frame(width: 35, height: 35)
+                        .background(Color.gray)
+                        .cornerRadius(100)
+                }
                 
                 TextField("hello ", text: $commentText)
+                    .focused($commentFocused)
+                    .autocapitalization(.none)
                     .padding()
-                    .background(Color.gray)
+                    .background(Capsule().fill(Color.init(white: 0.9)))
+                    .padding()
+                
                 Button {
-                    print("dd")
+                    commentFocused = false
+                    vm.writeComment(text: self.commentText, currentUser: vmAuth.currentUser) { didWrite in
+                        if didWrite == true {
+                            self.commentText  = ""
+                            vm.fetchComments()
+                        }
+                    }
                 } label: {
-                    Text("send")
+                    Text("write")
                         .foregroundColor(Color.blue)
                 }
-
             }
-            .padding()
+            .padding(.horizontal)
         }
-        
-
     }
-    
-
 }
 
 struct PostCommentView_Previews: PreviewProvider {
     static var previews: some View {
         PostCommentView(postUid: "216j9009psTjqnwBoHtD")
+            .environmentObject(AuthViewModel())
     }
 }
