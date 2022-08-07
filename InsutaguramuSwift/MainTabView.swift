@@ -14,40 +14,44 @@ struct MainTabView: View {
     
     
     var body: some View {
-//        NavigationView{
-            TabView(selection: $titleName){
+        //        NavigationView{
+        TabView(selection: $titleName){
+            NavigationView{
                 MainPostsView()
-//                    .environmentObject(AuthViewModel())
-                    .tabItem {
-                        Image(systemName: "house")
-                    }
-                    .tag("hello")
-                
-                UploadPost()
-                    .tabItem {
-                        Image(systemName: "pencil")
-                    }
-                    .tag("upload")
-                
-                Text("message")
-                    .tabItem {
-                        Image(systemName: "message")
-                    }
-                    .tag("33")
-                
-                NavigationView{
-                    UserProfileView(userUid: vmAuth.currentUser?.uid ?? "no uid")
-    //                    .environmentObject(AuthViewModel())
-                }
-                .tabItem {
-                    Image(systemName: "person")
-                }
-                .tag("44")
             }
-//            .navigationTitle(self.titleName)
-//            .navigationBarTitleDisplayMode(.inline)
-//        }
-
+            //                    .environmentObject(AuthViewModel())
+            .tabItem {
+                Image(systemName: "house")
+            }
+            .tag("hello")
+            
+            UploadPost()
+                .tabItem {
+                    Image(systemName: "pencil")
+                }
+                .tag("upload")
+            
+            NavigationView{
+                MainRecentMessagesView()
+            }
+                .tabItem {
+                    Image(systemName: "message")
+                }
+                .tag("33")
+            
+            NavigationView{
+                UserProfileView(userUid: vmAuth.currentUser?.uid ?? "no uid")
+                //                    .environmentObject(AuthViewModel())
+            }
+            .tabItem {
+                Image(systemName: "person")
+            }
+            .tag("44")
+        }
+        //            .navigationTitle(self.titleName)
+        //            .navigationBarTitleDisplayMode(.inline)
+        //        }
+        
     }
 }
 
