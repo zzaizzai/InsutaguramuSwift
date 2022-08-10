@@ -79,3 +79,24 @@ struct Comment: Identifiable {
         
     }
 }
+
+
+struct ChatMessage: Identifiable {
+    var id : String { documentId }
+    
+    let documentId: String
+    let fromId, toId, text: String
+    
+    let time: Timestamp
+    
+    init(documentId: String,  data: [String:Any]) {
+        
+        self.documentId = documentId
+        self.fromId = data["fromId"] as? String ?? "no fromId"
+        self.toId = data["toId"] as? String ?? "no toId"
+        self.text = data["text"] as? String ?? "no text"
+        self.time = data["time"] as? Timestamp ?? Timestamp()
+        
+        
+    }
+}

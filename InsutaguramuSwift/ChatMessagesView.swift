@@ -7,89 +7,157 @@
 
 import SwiftUI
 import Firebase
+import SDWebImageSwiftUI
 
-struct ChatMessage: Identifiable {
-    var id : String { documentId }
-    
-    let documentId: String
-    let fromId, toId, text: String
-    
-    let time: Timestamp
-    
-    
-}
+
+
+
 
 class ChatMessagesViewModel: ObservableObject {
     
+    var myUser: User?
+    var chatUser: User?
+    
     @Published var chatText = "chat text"
+    @Published var chatMessages = [ChatMessage]()
+    
+    init(chatUser: User?, myUser: User?) {
+        self.chatUser = chatUser
+        self.myUser = myUser
+        
+        self.fetchChatMessages()
+    }
     
     
     
-    func sendChatMessage (myUser: User?) {
-        
-        guard let myUserData = myUser else { return }
-        
-        
-        let recentChatdataInMyDB = [
-            "uid" :  "xZryzy2r0YeKAHrQCuoprzDR5nO2",
-            "email": "test2@test.com",
-            "name": "Tomas",
-            "profileImageUrl": "profileImageUrl",
-            "recentText" : self.chatText,
-            "time" : Date(),
-            
-        ] as [String:Any]
-        
-        let chatDataInMyDB = [
-            "fromId" : "Akct8DqUtdZJYCc9yn2UojJqlNY2",
-            "toId" : "xZryzy2r0YeKAHrQCuoprzDR5nO2",
-            "text" : self.chatText,
-            "time" : Date(),
-            
-        ] as [String:Any]
-        
-        
-        //Chat Messages in my DB
-        Firestore.firestore().collection("messages").document(myUserData.uid).collection("xZryzy2r0YeKAHrQCuoprzDR5nO2").document().setData(chatDataInMyDB) { error in
-            if let error = error {
-                print(error)
-                return
-            }
-            
-            //Recent Messages in my DB
-            Firestore.firestore().collection("recentMessages").document(myUserData.uid).collection("recentMessages").document("xZryzy2r0YeKAHrQCuoprzDR5nO2").setData(recentChatdataInMyDB) { error in
-                if let error2 = error {
-                    print(error2)
+        func fetchChatMessages () {
+    
+            guard let myUid = self.myUser?.uid else { return }
+            guard let chatUserUid = self.chatUser?.uid else { return }
+    
+            Firestore.firestore().collection("messages").document(myUid).collection(chatUserUid).order(by: "time").getDocuments { snapshots, error in
+                if let error = error {
+                    print(error)
                     return
                 }
+    
+                snapshots?.documents.forEach({ doc in
+                    let documentId = doc.documentID
+                    let data = doc.data()
+    
+                    self.chatMessages.append(.init(documentId: documentId, data: data))
+    
+    
+    
+    
+                })
             }
+    
         }
-        
-        
-        
-        
-        self.chatText = ""
-        
-    }
+    
+
+        func sendChatMessage () {
+    
+            guard let myUserData = self.myUser else { return }
+            guard let chatUserData = self.chatUser else { return }
+    
+    
+            //common Data
+            let chatData = [
+                "fromId" : myUserData.id,
+                "toId" : chatUserData.id,
+                "text" : self.chatText,
+                "time" : Date(),
+            ] as [String:Any]
+            
+            
+            //DB myUser
+            let recentChatdataInMyDB = [
+                "uid" :  chatUserData.uid,
+                "email": chatUserData.email,
+                "name": chatUserData.name,
+                "profileImageUrl": chatUserData.profileImageUrl,
+                "recentText" : self.chatText,
+                "time" : Date(),
+            ] as [String:Any]
+    
+            //Chat Messages in my DB
+            Firestore.firestore().collection("messages").document(myUserData.uid).collection(chatUserData.uid).document().setData(chatData) { error in
+                if let error = error {
+                    print(error)
+                    return
+                }
+    
+                //Recent Messages in my DB
+                Firestore.firestore().collection("recentMessages").document(myUserData.uid).collection("recentMessages").document(chatUserData.uid).setData(recentChatdataInMyDB) { error in
+                    if let error2 = error {
+                        print(error2)
+                        return
+                    }
+                }
+            }
+            
+            //DB chatUser
+            let recentChatdataInChatUserDB = [
+                "uid" :  myUserData.uid,
+                "email": myUserData.email,
+                "name": myUserData.name,
+                "profileImageUrl": myUserData.profileImageUrl,
+                "recentText" : self.chatText,
+                "time" : Date(),
+            ] as [String:Any]
+            
+            //Chat Messages in chatUser DB
+            Firestore.firestore().collection("messages").document(chatUserData.uid).collection(myUserData.uid).document().setData(chatData) { error in
+                if let error = error {
+                    print(error)
+                    return
+                }
+                
+                //Recent Messages in chatUser DB
+                Firestore.firestore().collection("recentMessages").document(chatUserData.uid).collection("recentMessages").document(myUserData.uid).setData(recentChatdataInChatUserDB) { error2 in
+                    if let error2 = error2{
+                        print(error2)
+                        return
+                    }
+                }
+            }
+    
+    
+    
+    
+    
+            self.chatText = ""
+    
+        }
 }
 
 
 struct ChatMessagesView: View {
     
-    let opponentUid: String
     
+    
+    @ObservedObject var vm : ChatMessagesViewModel
     @EnvironmentObject var vmAuth: AuthViewModel
     
-    @ObservedObject var vm = ChatMessagesViewModel()
-    
+    init(chatUser: User?, myUser: User?){
+        self.vm = .init(chatUser: chatUser, myUser: myUser)
+        
+    }
     
     
     var body: some View {
+        
         ZStack {
             ScrollView{
+                Button {
+                    //                    vm.fetchChatMessages()
+                } label: {
+                    Text("fetchChat")
+                }
                 
-                ForEach(0..<5) { message in
-                    MessageView()
+                ForEach(vm.chatMessages) { message in
+                    MessageView(chatMessage: message)
                     
                 }
                 
@@ -106,13 +174,26 @@ struct ChatMessagesView: View {
         }
         .navigationBarItems(leading:
                                 HStack{
-            Image(systemName: "person")
-                .resizable()
-                .frame(width: 35, height: 35)
-                .background(Color.gray)
-                .cornerRadius(100)
+            ZStack{
+                
+                WebImage(url: URL(string: vm.chatUser?.profileImageUrl ?? "no url"))
+                    .resizable()
+                    .frame(width: 35, height: 35)
+                    .background(Color.gray)
+                    .cornerRadius(100)
+                    .zIndex(1)
+                
+                
+                Image(systemName: "person")
+                    .resizable()
+                    .frame(width: 35, height: 35)
+                    .background(Color.gray)
+                    .cornerRadius(100)
+                
+            }
             
-            Text("user name")
+            
+            Text(vm.chatUser?.name ?? "no name")
             
         })
         
@@ -125,8 +206,12 @@ struct ChatMessagesView: View {
             Button {
                 print("photo")
             } label: {
-                Image(systemName: "photo")
-                    .foregroundColor(Color.black)
+                WebImage(url: URL(string: vm.myUser?.profileImageUrl ?? "no url"))
+                    .resizable()
+                    .frame(width: 35, height: 35)
+                    .background(Color.gray)
+                    .cornerRadius(100)
+                    .zIndex(1)
             }
             
             TextField("Eenter messages....", text: $vm.chatText)
@@ -135,7 +220,7 @@ struct ChatMessagesView: View {
             if vm.chatText.count > 0 {
                 
                 Button {
-                    vm.sendChatMessage(myUser: vmAuth.currentUser)
+                    vm.sendChatMessage()
                 } label: {
                     Text("send")
                         .foregroundColor(Color.white)
@@ -163,7 +248,11 @@ struct ChatMessagesView: View {
     
 }
 
+
 struct MessageView: View {
+    
+    let chatMessage : ChatMessage
+    
     var body: some View{
         HStack{
             Spacer()
@@ -171,7 +260,7 @@ struct MessageView: View {
             Text("AM 3:00")
                 .foregroundColor(Color.gray)
             
-            Text("message")
+            Text(chatMessage.text)
                 .foregroundColor(Color.white)
                 .padding()
                 .background(Color.blue)
@@ -186,8 +275,18 @@ struct MessageView: View {
 struct ChatMessagesView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView{
-            ChatMessagesView(opponentUid: "123")
+            MainRecentMessagesView()
                 .environmentObject(AuthViewModel())
         }
     }
 }
+
+//struct ChatMessagesView_Previews: PreviewProvider {
+//    private var chatvm = ChatMessagesViewModel(myUser: nil, chatUser: nil)
+//    static var previews: some View {
+//        NavigationView{
+//            ChatMessagesView(vm: chatvm)
+//                .environmentObject(AuthViewModel())
+//        }
+//    }
+//}
