@@ -109,6 +109,7 @@ struct UserProfileView: View {
     let userUid: String
     @ObservedObject var vm : UserProfileViewModel
     @EnvironmentObject var vmAuth: AuthViewModel
+    @State private var showChatMessages = false
     
     @State var showOptions = false
     
@@ -171,6 +172,9 @@ struct UserProfileView: View {
     }
     
     private var profileView: some View {
+        
+        
+        
         VStack{
             
             HStack{
@@ -223,16 +227,24 @@ struct UserProfileView: View {
             
             if self.userUid != (vmAuth.currentUser?.uid ?? "no uid") {
                 Button {
-                    print("chat")
+                    self.showChatMessages.toggle()
                 } label: {
                     Spacer()
                     Text("Chat")
+                        .fontWeight(.bold)
                         .foregroundColor(Color.white)
                         .padding(.vertical, 8)
-                    
+                        
                     Spacer()
+                    
+                    NavigationLink("", isActive: $showChatMessages) {
+                        ChatMessagesView(chatUser: vm.currentProfileUser, myUser: vmAuth.currentUser)
+                    }
                 }
-                .background(Color.gray)
+                .background(Color.init(white: 0.7))
+                .cornerRadius(10)
+                .padding()
+                
                 
             }
 
