@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Firebase
+import SDWebImageSwiftUI
 
 struct RecentMessage: Identifiable, Codable {
     
@@ -122,14 +123,7 @@ struct MainRecentMessagesView: View {
     var body: some View {
         ScrollView{
             LazyVStack(alignment: .leading){
-                Text(vm.myUser?.uid ?? "no uid")
                 
-                Button {
-                    vm.fetchRecentMessages()
-                } label: {
-                    Text("fetch recentMessages")
-                }
-
                 ForEach(vm.recentMessages){ recentMessage in
                     RecentMessageView(recentMessage: recentMessage)
 
@@ -139,6 +133,13 @@ struct MainRecentMessagesView: View {
         }
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarItems(leading:
+                                VStack{
+            Text(vmAuth.currentUser?.name ?? "no name")
+                .fontWeight(.heavy)
+                .font(.system(size: 30))
+                .padding()
+        })
     }
 }
 
@@ -160,11 +161,21 @@ struct RecentMessageView: View{
     }
     var body: some View{
         HStack{
-            Image(systemName: "person")
-                .resizable()
-                .frame(width: 35, height: 35)
-                .background(Color.gray)
-                .cornerRadius(100)
+            
+            ZStack{
+                WebImage(url: URL(string: recentMessage.profileImageUrl))
+                    .resizable()
+                    .background(Color.gray)
+                    .frame(width: 45, height: 45)
+                    .cornerRadius(100)
+                    .zIndex(1)
+                
+                Image(systemName: "person")
+                    .resizable()
+                    .frame(width: 45, height: 45)
+                    .background(Color.gray)
+                    .cornerRadius(100)
+            }
             
             VStack(alignment: .leading){
                 Text(recentMessage.name)
