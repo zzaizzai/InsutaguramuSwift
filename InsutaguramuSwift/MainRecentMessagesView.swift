@@ -46,6 +46,8 @@ class MainRecentMessagesViewModel: ObservableObject {
         
     }
     
+    var firestoreListner: ListenerRegistration?
+    
     func fetchCurrentUser(completion: @escaping ()->()) {
         guard let myUid = Auth.auth().currentUser?.uid else { return  }
         
@@ -75,21 +77,46 @@ class MainRecentMessagesViewModel: ObservableObject {
         
         guard let user = self.myUser else { return }
         
-        Firestore.firestore().collection("recentMessages").document(user.uid).collection("recentMessages").order(by: "time").getDocuments { snapshots, error in
+        firestoreListner?.remove()
+        self.recentMessages.removeAll()
+        
+        
+        Firestore.firestore().collection("recentMessages").document(user.uid).collection("recentMessages").order(by: "time").addSnapshotListener { snapshots, error in
             if let error = error {
                 print(error)
                 return
             }
             
+            
+            // doesnt work... if you send a message, the navigate go back to recent message
+//            snapshots?.documentChanges.forEach({ change in
+//                let data = change.document.data()
+//                let documentId = change.document.documentID
+//
+//                if let index = self.recentMessages.firstIndex(where: { rm in
+//                    return rm.id == documentId
+//                }) {
+//                    self.recentMessages.remove(at: index)
+//                }
+//
+//                do {
+//                    self.getUserDataOfRecentMessages(chatUserUid: documentId) { userData in
+//                        self.recentMessages.insert(.init(documentId: documentId, data: data, user: userData), at: 0)
+//
+//                    }
+//                }
+//
+//            })
+            
             snapshots?.documents.forEach({ doc in
                 let documentId = doc.documentID
                 let data = doc.data()
-                
+
                 self.getUserDataOfRecentMessages(chatUserUid: documentId) { userData in
                     self.recentMessages.insert(.init(documentId: documentId, data: data, user: userData), at: 0)
-                    
+
                 }
-                
+
             })
             
         }
@@ -123,8 +150,11 @@ struct MainRecentMessagesView: View {
         ScrollView{
             LazyVStack(alignment: .leading){
                 
+                Divider()
+                
                 ForEach(vm.recentMessages){ recentMessage in
                     RecentMessageView(recentMessage: recentMessage)
+                    Divider()
                     
                     
                 }
@@ -140,13 +170,10 @@ struct MainRecentMessagesView: View {
                 .padding()
         })
     }
+    
 }
 
 
-class RecentMessageViewModel: ObservableObject{
-    
-    
-}
 
 struct RecentMessageView: View{
     @EnvironmentObject var vmAuth: AuthViewModel

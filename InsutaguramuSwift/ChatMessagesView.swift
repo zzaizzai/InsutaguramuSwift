@@ -29,23 +29,32 @@ class ChatMessagesViewModel: ObservableObject {
     }
     
     
+    var firestoreListener : ListenerRegistration?
     
     func fetchChatMessages () {
+        
+
         
         guard let myUid = self.myUser?.uid else { return }
         guard let chatUserUid = self.chatUser?.uid else { return }
         
-        Firestore.firestore().collection("messages").document(myUid).collection(chatUserUid).order(by: "time").getDocuments { snapshots, error in
+        firestoreListener?.remove()
+        self.chatMessages.removeAll()
+        
+        Firestore.firestore().collection("messages").document(myUid).collection(chatUserUid).order(by: "time").addSnapshotListener { snapshots, error in
             if let error = error {
                 print(error)
                 return
             }
             
-            snapshots?.documents.forEach({ doc in
-                let documentId = doc.documentID
-                let data = doc.data()
-                
-                self.chatMessages.append(.init(documentId: documentId, data: data))
+            snapshots?.documentChanges.forEach({ change in
+                if change.type == .added {
+                    let documentId = change.document.documentID
+                    let data = change.document.data()
+                    
+                    self.chatMessages.append(.init(documentId: documentId, data: data))
+                }
+
                 
                 
                 
@@ -166,6 +175,9 @@ struct ChatMessagesView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("")
+        .onDisappear(perform: {
+            vm.firestoreListener?.remove()
+        })
         .safeAreaInset(edge: .bottom) {
             
             bottomView
