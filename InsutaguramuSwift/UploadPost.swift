@@ -106,8 +106,8 @@ struct UploadPost: View {
                     if self.uploadImage == nil || self.uploadText.count < 5 {
                         Text("upload")
                             .padding()
-                            .foregroundColor(Color.gray)
-                            .background(Color.black)
+                            .foregroundColor(Color.init(white: 0.45))
+                            .background(Color.gray)
                             .cornerRadius(30)
                     } else {
                         Button {
@@ -137,9 +137,9 @@ struct UploadPost: View {
                 ZStack(alignment: .top){
                     TextEditor(text: $uploadText)
                         .padding()
-                        .frame(width: .infinity, height: 200)
                         .background(Color.gray)
-                        
+                        .frame(width: 400, height: 200)
+                    
                     
                     if self.uploadText.isEmpty {
                         
@@ -162,9 +162,10 @@ struct UploadPost: View {
                     if let uploadImage = uploadImage {
                         Image(uiImage: uploadImage)
                             .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: .infinity, height: 400, alignment: .center)
+                            .frame(width: 400, height: 400)
                             .scaledToFill()
+                            .padding()
+                        
                         
                     } else {
                         Image(systemName: "photo")
