@@ -15,6 +15,8 @@ import SDWebImageSwiftUI
 
 class ChatMessagesViewModel: ObservableObject {
     
+    
+    @Published var scrollCount : Int = 0
     var myUser: User?
     var chatUser: User?
     
@@ -33,7 +35,6 @@ class ChatMessagesViewModel: ObservableObject {
     
     func fetchChatMessages () {
         
-
         
         guard let myUid = self.myUser?.uid else { return }
         guard let chatUserUid = self.chatUser?.uid else { return }
@@ -53,13 +54,15 @@ class ChatMessagesViewModel: ObservableObject {
                     let data = change.document.data()
                     
                     self.chatMessages.append(.init(documentId: documentId, data: data))
+                    self.scrollCount += 1
                 }
 
-                
-                
-                
-                
             })
+            
+            DispatchQueue.main.async {
+                self.scrollCount += 1
+                
+            }
         }
         
     }
@@ -71,7 +74,7 @@ class ChatMessagesViewModel: ObservableObject {
         guard let chatUserData = self.chatUser else { return }
         
         
-        //common Data
+        //common message Data
         let chatData = [
             "fromId" : myUserData.id,
             "toId" : chatUserData.id,
@@ -132,10 +135,6 @@ class ChatMessagesViewModel: ObservableObject {
             }
         }
         
-        
-        
-        
-        
         self.chatText = ""
         
     }
@@ -157,20 +156,32 @@ struct ChatMessagesView: View {
     
     var body: some View {
         
-        ZStack {
-            ScrollView{
-                Button {
-                    //                    vm.fetchChatMessages()
-                } label: {
-                    Text("fetchChat")
+        ScrollView {
+            ScrollViewReader{ ScrollViewProxy in
+                //                Button {
+                //                    vm.fetchChatMessages()
+                //                } label: {
+                //                    Text("fetchChat")
+                //                }
+                
+                VStack{
+                    ForEach(vm.chatMessages) { message in
+                        MessageView(chatMessage: message)
+                        
+                    }
+                    
+                    HStack{ Spacer()}
+                        .id("Empty")
                 }
                 
-                ForEach(vm.chatMessages) { message in
-                    MessageView(chatMessage: message)
+                .onReceive(vm.$scrollCount) { _ in
+                    withAnimation(.easeIn(duration: 0.1)){
+                        ScrollViewProxy.scrollTo("Empty", anchor: .bottom)
+                        
+                        
+                    }
                     
                 }
-                
-                
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -209,6 +220,15 @@ struct ChatMessagesView: View {
                 .fontWeight(.bold)
             
         })
+//        .navigationBarItems(trailing:
+//                                HStack{
+//            Button {
+//                vm.scrollCount += 1
+//            } label: {
+//                Text(vm.scrollCount.description)
+//            }
+//
+//        })
         
         
     }
@@ -258,17 +278,15 @@ struct ChatMessagesView: View {
             
         }
         .padding()
+        .background(Color.white)
         
     }
-    
-    
 }
 
 
 struct MessageView: View {
     
     let chatMessage : ChatMessage
-    
     
     var body: some View{
         VStack{
@@ -283,7 +301,7 @@ struct MessageView: View {
                         .foregroundColor(Color.white)
                         .padding()
                         .background(Color.blue)
-                        .cornerRadius(30)
+                        .cornerRadius(15)
                 }
                 .padding(.horizontal)
                 
@@ -294,7 +312,7 @@ struct MessageView: View {
                         .foregroundColor(Color.white)
                         .padding()
                         .background(Color.init(red: 0.2, green: 0.7, blue: 0.5))
-                        .cornerRadius(30)
+                        .cornerRadius(15)
                     
                     Text(chatMessage.time.dateValue(), style: .time)
                         .foregroundColor(Color.gray)

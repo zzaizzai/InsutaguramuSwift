@@ -17,9 +17,13 @@ class MainPostsViewModel: ObservableObject {
         fetchPosts()
     }
     
+    var firestoreListener : ListenerRegistration?
+    
+    
     func fetchPosts() {
         
         posts.removeAll()
+        firestoreListener?.remove()
         
         Firestore.firestore().collection("posts").order(by: "time").getDocuments { snapshots, error in
             if let error = error {
@@ -46,7 +50,7 @@ struct MainPostsView: View {
     var body: some View {
         
         VStack {
-            RefreshableScrollView {
+            ScrollView {
                 VStack{
                     ForEach(vm.posts){ post in
                         PostView(nonCheckedPost: post)
